@@ -70,7 +70,7 @@ fn main() {
 	println("Open: ${res_open}")
 	res_connect := duckdb_connect(db.db, conn)
 	println("Connect: ${res_connect}")
-	res_results := duckdb_query(conn.conn, c'create table test as select 1', results)
+	res_results := duckdb_query(conn.conn, c"drop table if exists test; create table test as select 'hi' as message", results)
 	println("Query: ${res_results}")
 	duckdb_destroy_result(results)
 	duckdb_disconnect(conn)
