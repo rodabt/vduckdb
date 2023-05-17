@@ -17,4 +17,4 @@ A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB
 ## Changelog
 
 - 05/12/2023: First commit to test library integration with working code
-- 16/12/2023: Added connection and query functions, and a simple Makefile
+- 05/16/2023: Added connection and query functions, and a simple Makefile
