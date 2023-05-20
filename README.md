@@ -16,9 +16,7 @@ import duckdb
 
 fn main() {
   db := &duckdb.Database{}
-  conn := &duckdb.Connection{}
-  results := &duckdb.Results{}
-  if duckdb.open(c'file.db', db) {
+  if duckdb.open(c'file.db', db) == duckdb.State.duckdbsuccess {
     println("Success")
   } else {
     println("Could not open database")

@@ -1,3 +1,4 @@
 *.db*
+test.v
 duckdb.h
 libduckdb.so
