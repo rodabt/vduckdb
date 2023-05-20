@@ -9,7 +9,7 @@ fn main() {
 	conn := &duckdb.Connection{}
 	results := &duckdb.Results{}
 
-	res_open := duckdb.open(c'here.db', db)
+	res_open := duckdb.open(c':memory:', db)   // or file.db
 	println('Open: ${res_open}')
 
 	res_connect := duckdb.connect(db.db, conn)
