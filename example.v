@@ -7,26 +7,43 @@ fn main() {
 	// Define types
 	db := &duckdb.Database{}
 	conn := &duckdb.Connection{}
-	results := &duckdb.Results{}
+	result := &duckdb.Result{}
+	arrow_result := &duckdb.Arrow{}
 
-	res_open := duckdb.open(c':memory:', db)   // or file.db
+	res_open := duckdb.open(c':memory:', db)
 	println('Open: ${res_open}')
 
 	res_connect := duckdb.connect(db.db, conn)
 	println('Connect: ${res_connect}')
 
-	res_results := duckdb.query(conn.conn, c'select id, id*100 as val from range(10) tbl(id)',
-		results)
-	println('Query: ${res_results}')
+	mut res := duckdb.query(conn.conn, 
+		c"select id as val, id*100 as nval from range(10) tbl(id)",
+		result)
+	println("Query: ${res}")
 
-	num_rows := duckdb.row_count(results)
+	res = duckdb.query_arrow(conn.conn, 
+		c'select id, id*100 as val from range(10) tbl(id)', 
+		arrow_result)
+	println("Query Arrow: ${res}")
+
+	num_rows := duckdb.row_count(result)
 	println('Row count: ${num_rows}')
 
-	num_columns := duckdb.column_count(results)
+	num_columns := duckdb.column_count(result)
 	println('Column count: ${num_columns}')
 
+	prinln("Data: ")
+	for r in 0 .. num_rows {
+		for c in 0 .. num_columns {
+			print(unsafe { duckdb.value_varchar(result, c, r).vstring() })
+			print(" ")
+		}
+		println("")
+	}
+
 	// Terminate
-	duckdb.destroy_result(results)
+	duckdb.destroy_arrow(arrow_result)
+	duckdb.destroy_result(result)
 	duckdb.disconnect(conn)
 	duckdb.close(db)
 }
