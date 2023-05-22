@@ -36,6 +36,7 @@ Check [example.v](example.v) for a reference
 
 ## Changelog
 
+- 05/21/2023: Added simple data output with value_varchar
 - 05/20/2023: Refactored as V Module
 - 05/17/2023: Completed a simple query cycle
 - 05/16/2023: Added connection and query functions, and a simple Makefile

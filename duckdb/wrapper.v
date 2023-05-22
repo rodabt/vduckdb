@@ -144,6 +144,5 @@ pub fn destroy_arrow(result &Arrow) {
 
 fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
 pub fn value_varchar(result &Result, col u64, row u64) &char {
-	res := C.duckdb_value_varchar(result, col, row)
-	return res
+	return C.duckdb_value_varchar(result, col, row)
 }
