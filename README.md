@@ -25,7 +25,7 @@ fn main() {
 }
 ```
 
-Check [example.v](example.v) for a reference
+Check [example.v](example.v) for a more detailed example
 
 ## Roadmap
 
