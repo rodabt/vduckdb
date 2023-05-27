@@ -8,40 +8,41 @@ fn main() {
 	db := &duckdb.Database{}
 	conn := &duckdb.Connection{}
 	result := &duckdb.Result{}
-	arrow_result := &duckdb.Arrow{}
 
 	file := ':memory:'
-	res_open := duckdb.open(file.str, db)
-	println('Open DB in ${file}, state: ${res_open}')
+	mut res := duckdb.open(file.str, db)
+	println('Open DB in ${file}, state: ${res}')
 
-	res_connect := duckdb.connect(db.db, conn)
-	println('Connect to DB, state: ${res_connect}')
+	res = duckdb.connect(db.db, conn)
+	println('Connect to DB, state: ${res}')
 
-	println("---------------")
-	query := "select id as val, id*100 as nval from range(10) tbl(id)"
+	query := "with data as (select id+10 as x, id*250 as y, 'test' as zzz from range(10) tbl(id)) select * from data"
 	println("Query: ${query}")
-	mut res := duckdb.query(conn.conn, 
-		query.str,
-		result)
+	res = duckdb.query(conn.conn, query.str, result)
 	println("Query state: ${res}")
 
 	num_rows := duckdb.row_count(result)
 	num_columns := duckdb.column_count(result)
 
-	println("")
-	println("Data: ")
+	mut arr := [][]string{len: int(num_rows), init: []string{len: int(num_columns)}}
 	for r in 0 .. num_rows {
 		for c in 0 .. num_columns {
-			print(unsafe { duckdb.value_varchar(result, c, r).vstring() })
-			print(" ")
+			arr[r][c] = unsafe { duckdb.value_varchar(result, c, r).vstring() }
 		}
-		println("")
 	}
+	println("")
+
+	mut column_names := []string{len: int(num_columns), init:''}
+	for index, _ in column_names {
+		column_names[index] = unsafe { duckdb.column_name(result, u64(index)).vstring() }
+	}
+
+	duckdb.print_table(arr, column_names)
+	println("")
 	println('Row count: ${num_rows}')
 	println('Column count: ${num_columns}')
 
 	// Terminate
-	duckdb.destroy_arrow(arrow_result)
 	duckdb.destroy_result(result)
 	duckdb.disconnect(conn)
 	duckdb.close(db)

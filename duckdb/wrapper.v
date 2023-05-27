@@ -79,13 +79,25 @@ pub enum State {
 	duckdberror = 1
 }
 
+pub struct Data_chunk {
+pub:
+	dtck voidptr
+}
+
+pub struct Vector {
+pub:
+	vctr voidptr
+}
+
 pub struct String {
 pub:
 	data string
 	size u64
 }
 
-// Function definitions
+/* 
+* OPEN and CONNECTION
+*/
 
 fn C.duckdb_open(path &char, database &Database) State
 pub fn open(path &char, database &Database) State {
@@ -95,11 +107,6 @@ pub fn open(path &char, database &Database) State {
 fn C.duckdb_connect(database &Database, connection &Connection) State
 pub fn connect(database &Database, connection &Connection) State {
 	return C.duckdb_connect(database, connection)
-}
-
-fn C.duckdb_query(connection &Connection, query &char, result &Result) State
-pub fn query(connection &Connection, query &char, result &Result) State {
-	return C.duckdb_query(connection, query, result)
 }
 
 fn C.duckdb_disconnect(connection &Connection)
@@ -112,14 +119,13 @@ pub fn close(database &Database) {
 	C.duckdb_close(database)
 }
 
-fn C.duckdb_library_version() &char
-pub fn library_version() &char {
-	return C.duckdb_library_version()
-}
+/* 
+* QUERY AND RESULTS
+*/
 
-fn C.duckdb_destroy_result(result &Result)
-pub fn destroy_result(result &Result) {
-	C.duckdb_destroy_result(result)
+fn C.duckdb_query(connection &Connection, query &char, result &Result) State
+pub fn query(connection &Connection, query &char, result &Result) State {
+	return C.duckdb_query(connection, query, result)
 }
 
 fn C.duckdb_row_count(result &Result) u64
@@ -132,6 +138,42 @@ pub fn column_count(result &Result) u64 {
 	return C.duckdb_column_count(result)
 }
 
+fn C.duckdb_column_name(result &Result, col_idx u64) &char 
+pub fn column_name(result &Result, col_idx u64) &char {
+	return C.duckdb_column_name(result, col_idx)
+}
+
+fn C.duckdb_destroy_result(result &Result)
+pub fn destroy_result(result &Result) {
+	C.duckdb_destroy_result(result)
+}
+
+fn C.duckdb_result_chunk_count(result Result) u64
+pub fn result_chunk_count(result Result) u64 {
+	return C.duckdb_result_chunk_count(result)
+}
+
+fn C.duckdb_result_get_chunk(result Result, chunk_index u64) &Data_chunk
+pub fn result_get_chunk(result Result, chunk_index u64) &Data_chunk {
+	return C.duckdb_result_get_chunk(result, chunk_index)
+}
+
+fn C.duckdb_data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector
+pub fn data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector {
+	return C.duckdb_data_chunk_get_vector(chunk , col_idx)
+}
+
+
+// DEPRECATED:
+fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
+pub fn value_varchar(result &Result, col u64, row u64) &char {
+	return C.duckdb_value_varchar(result, col, row)
+}
+
+/* 
+* ARROW
+*/
+
 fn C.duckdb_query_arrow(connection &Connection, query &char, result &Arrow) State
 pub fn query_arrow(connection &Connection, query &char, result &Arrow) State {
 	return C.duckdb_query_arrow(connection, query, result)
@@ -142,7 +184,58 @@ pub fn destroy_arrow(result &Arrow) {
 	C.duckdb_destroy_arrow(result)
 }
 
-fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
-pub fn value_varchar(result &Result, col u64, row u64) &char {
-	return C.duckdb_value_varchar(result, col, row)
+/* 
+* METADATA
+*/
+
+fn C.duckdb_library_version() &char
+pub fn library_version() &char {
+	return C.duckdb_library_version()
+}
+
+
+/* 
+* UTILS
+*/
+fn print_row(elems []string, widths []int, top bool) {
+	if top {
+		print("+")
+		for index, _ in elems {
+			mut x := "-".repeat(widths[index]+2)
+			print(x)
+			print("+")
+		}
+		println("")
+	}
+	print("|")
+    for index,elem in elems {
+		mut s := " ".repeat(widths[index] - elem.len + 2)
+		mut x := "${elem}${s}".limit(30)
+		print(x)
+        print("|")
+	}
+	println("")
+	print("+")
+	for index, _ in elems {
+		mut x := "-".repeat(widths[index]+2)
+		print(x)
+		print("+")
+	}
+	println("")
+}
+
+
+pub fn print_table(array [][]string, header []string) {
+	mut column_widths := []int{len: header.len, init: 0}
+    for row in array {
+        for index, element in row {
+            if element.len > column_widths[index] {
+                column_widths[index] = element.len
+            }
+        }
+    }
+	print_row(header, column_widths, true)
+    for row in array {
+		print_row(row, column_widths, false)
+    }
 }
