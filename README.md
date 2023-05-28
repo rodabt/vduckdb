@@ -1,4 +1,4 @@
-# vduck
+# vduck 0.0.1
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
