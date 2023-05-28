@@ -1,5 +1,8 @@
 run:
-	LD_LIBRARY_PATH=. v run example.v && rm here.db*
+	v run example.v
 
 fmt: 
 	v fmt -w main.v
+
+test:
+	v -stats test tests/
