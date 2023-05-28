@@ -2,18 +2,18 @@
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
-ATTENTION: this version is in very alpha stage, use at your own risk...
+ATTENTION: this version is in very alpha stage, use at your own risk.
+
+## Requirements
+
+- A working V version 0.3.x or higher
+- `libduckdb` in your Lib path
 
 ## Installing from VPM
 
 ```bash
 v install rodabt.vduck
 ```
-
-## Requirements
-
-- A working V version 0.3.x or higher
-- `libduckdb` in your Lib path
 
 ### Installing `libduckdb.so` in Linux
 
