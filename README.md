@@ -36,8 +36,10 @@ Check [example.v](example.v) for a more detailed example
 ## Roadmap
 
 - [x] Define as module
+- [x] Added tests
 - [ ] Map all definitions from `duckdb.h` header file to their V counterparts
-- [ ] Write documentation, tutorials and tests
+- [ ] Add website
+- [ ] Write documentation, and tutorials
 - [ ] Build integration with V ORM
 
 ## Changelog
