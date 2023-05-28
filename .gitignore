@@ -3,3 +3,4 @@ test.v
 duckdb.h
 libduckdb.so
 *.csv
+tmp/

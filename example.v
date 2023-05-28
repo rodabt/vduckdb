@@ -1,7 +1,5 @@
 import duckdb
 
-// Before running make sure libduckdb in your the path
-// Linux example: export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}":/path/to/libduckdb.so library (Linux)
 
 fn main() {
 	// Define types
@@ -9,17 +7,29 @@ fn main() {
 	conn := &duckdb.Connection{}
 	result := &duckdb.Result{}
 
+	println("\nvduck version: ${duckdb.vduck_version()}")
+
 	file := ':memory:'
 	mut res := duckdb.open(file.str, db)
-	println('Open DB in ${file}, state: ${res}')
+
+	if res == duckdb.State.duckdberror {
+		println('Error opening DB ${file}: ${res}')
+	}
 
 	res = duckdb.connect(db.db, conn)
-	println('Connect to DB, state: ${res}')
+
+	if res == duckdb.State.duckdberror {
+		println('Error connecting to DB: ${res}')
+	}
 
 	query := "with data as (select id+10 as x, id*250 as y, 'test' as zzz from range(10) tbl(id)) select * from data"
-	println("Query: ${query}")
+	println("Query:\n${query}\n")
+	
 	res = duckdb.query(conn.conn, query.str, result)
-	println("Query state: ${res}")
+	
+	if res == duckdb.State.duckdberror {
+		println('Error executing query: ${res}')
+	}	
 
 	num_rows := duckdb.row_count(result)
 	num_columns := duckdb.column_count(result)
@@ -30,7 +40,6 @@ fn main() {
 			arr[r][c] = unsafe { duckdb.value_varchar(result, c, r).vstring() }
 		}
 	}
-	println("")
 
 	mut column_names := []string{len: int(num_columns), init:''}
 	for index, _ in column_names {
@@ -38,7 +47,6 @@ fn main() {
 	}
 
 	duckdb.print_table(arr, column_names)
-	println("")
 	println('Row count: ${num_rows}')
 	println('Column count: ${num_columns}')
 

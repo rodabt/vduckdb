@@ -7,7 +7,13 @@ ATTENTION: this version is in very alpha stage, use at your own risk...
 ## Requirements
 
 - A working V version 0.3.x or higher
-- `libduckdb` in your path. Check DuckDB documentation
+- `libduckdb` in your Lib path
+
+### Installing `libduckdb.so` in Linux
+
+- Download the C/C++ zipfile from [https://duckdb.org/docs/installation/](https://duckdb.org/docs/installation/)
+- Copy library to an accesible lib directory, i.e. : `sudo cp libduckdb.so /usr/lib/local`
+- Rebuild cache: `sudo ldconfig`
 
 ## Main usage
 
@@ -36,6 +42,7 @@ Check [example.v](example.v) for a more detailed example
 
 ## Changelog
 
+- 05/28/2023: Added instructions for libduckdb on Linux
 - 05/27/2023: Added print_table utility
 - 05/21/2023: Added simple data output with value_varchar
 - 05/20/2023: Refactored as V Module
