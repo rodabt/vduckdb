@@ -39,6 +39,10 @@ fn main() {
 
 Check [example.v](example.v) for a more detailed example
 
+## Documentation
+
+Use `make docs` to create HTML documentation in `doc` folder
+
 ## Roadmap
 
 - [x] Define as module
@@ -50,6 +54,7 @@ Check [example.v](example.v) for a more detailed example
 
 ## Changelog
 
+- 06/07/2023: Added docs generator
 - 05/28/2023: Added instructions for libduckdb on Linux
 - 05/27/2023: Added print_table utility
 - 05/21/2023: Added simple data output with value_varchar

@@ -1,3 +1,6 @@
+// Copyright (c) 2023 Rodrigo Abt. All rights reserved.
+// Use of this source code is governed by an MIT license
+// that can be found in the LICENSE file.
 module duckdb
 
 // #flag -L.
@@ -96,21 +99,29 @@ pub:
 */
 
 fn C.duckdb_open(path &char, database &Database) State
+
+// Opens a new database file. For in memory user `:memory:` as path
 pub fn open(path &char, database &Database) State {
 	return C.duckdb_open(path, database)
 }
 
 fn C.duckdb_connect(database &Database, connection &Connection) State
+
+// Defines a new connection for a database
 pub fn connect(database &Database, connection &Connection) State {
 	return C.duckdb_connect(database, connection)
 }
 
 fn C.duckdb_disconnect(connection &Connection)
+
+// Disconnects from database
 pub fn disconnect(connection &Connection) {
 	C.duckdb_disconnect(connection)
 }
 
 fn C.duckdb_close(database &Database)
+
+// Closes database
 pub fn close(database &Database) {
 	C.duckdb_close(database)
 }

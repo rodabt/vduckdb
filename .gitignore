@@ -4,3 +4,4 @@ duckdb.h
 libduckdb.so
 *.csv
 tmp/
+doc/*
