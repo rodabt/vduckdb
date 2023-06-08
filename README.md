@@ -52,6 +52,10 @@ Use `make docs` to create HTML documentation in `doc` folder
 - [ ] Write documentation, and tutorials
 - [ ] Build integration with V ORM
 
+## Contributing
+
+Pull requests are welcome
+
 ## Changelog
 
 - 06/07/2023: Added docs generator
