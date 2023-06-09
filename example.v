@@ -1,4 +1,4 @@
-import duckdb
+import rodabt.vduck.duckdb
 
 
 fn main() {

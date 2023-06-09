@@ -1,8 +1,8 @@
-# vduck 0.0.1
+# vduck 0.1.0
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
-ATTENTION: this version is in very alpha stage, use at your own risk.
+ATTENTION: this version is in alpha stage, use at your own risk.
 
 ## Requirements
 
@@ -18,13 +18,13 @@ v install rodabt.vduck
 ### Installing `libduckdb.so` in Linux
 
 - Download the C/C++ zipfile from [https://duckdb.org/docs/installation/](https://duckdb.org/docs/installation/)
-- Copy library to an accesible lib directory, i.e. : `sudo cp libduckdb.so /usr/lib/local`
+- Copy library to an accesible lib directory, i.e. : `sudo cp libduckdb.so /usr/local/lib`
 - Rebuild cache: `sudo ldconfig`
 
 ## Main usage
 
 ```v
-import duckdb
+import rodabt.vduck.duckdb
 
 fn main() {
   db := &duckdb.Database{}
@@ -58,6 +58,7 @@ Pull requests are welcome
 
 ## Changelog
 
+- 06/09/2023: Fixed installation process and import reference. Bump to version 0.1.0
 - 06/07/2023: Added docs generator
 - 05/28/2023: Added instructions for libduckdb on Linux
 - 05/27/2023: Added print_table utility
