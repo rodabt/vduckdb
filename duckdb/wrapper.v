@@ -94,7 +94,7 @@ pub:
 	size u64
 }
 
-/* 
+/*
 * OPEN and CONNECTION
 */
 
@@ -126,7 +126,7 @@ pub fn close(database &Database) {
 	C.duckdb_close(database)
 }
 
-/* 
+/*
 * QUERY AND RESULTS
 */
 
@@ -145,7 +145,7 @@ pub fn column_count(result &Result) u64 {
 	return C.duckdb_column_count(result)
 }
 
-fn C.duckdb_column_name(result &Result, col_idx u64) &char 
+fn C.duckdb_column_name(result &Result, col_idx u64) &char
 pub fn column_name(result &Result, col_idx u64) &char {
 	return C.duckdb_column_name(result, col_idx)
 }
@@ -167,9 +167,8 @@ pub fn result_get_chunk(result Result, chunk_index u64) &Data_chunk {
 
 fn C.duckdb_data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector
 pub fn data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector {
-	return C.duckdb_data_chunk_get_vector(chunk , col_idx)
+	return C.duckdb_data_chunk_get_vector(chunk, col_idx)
 }
-
 
 // DEPRECATED:
 fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
@@ -177,7 +176,7 @@ pub fn value_varchar(result &Result, col u64, row u64) &char {
 	return C.duckdb_value_varchar(result, col, row)
 }
 
-/* 
+/*
 * ARROW
 */
 
@@ -186,12 +185,12 @@ pub fn query_arrow(connection &Connection, query &char, result &Arrow) State {
 	return C.duckdb_query_arrow(connection, query, result)
 }
 
-fn C.duckdb_destroy_arrow(result &Arrow) 
+fn C.duckdb_destroy_arrow(result &Arrow)
 pub fn destroy_arrow(result &Arrow) {
 	C.duckdb_destroy_arrow(result)
 }
 
-/* 
+/*
 * METADATA
 */
 

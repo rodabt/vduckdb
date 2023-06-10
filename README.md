@@ -47,10 +47,10 @@ Use `make docs` to create HTML documentation in `doc` folder
 
 - [x] Define as module
 - [x] Added tests
-- [ ] Map all definitions from `duckdb.h` header file to their V counterparts
-- [ ] Add website
-- [ ] Write documentation, and tutorials
+- [x] Write base documentation
+- [ ] Add website and tutorials
 - [ ] Build integration with V ORM
+- [ ] Map all definitions from `duckdb.h` header file to their V counterparts
 
 ## Contributing
 

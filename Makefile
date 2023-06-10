@@ -1,4 +1,4 @@
-.PHONY: run doc fmt test
+.PHONY: run docs fmt test
 
 run:
 	v run example.v
@@ -7,7 +7,7 @@ docs:
 	VDOC_SORT=false v doc -no-timestamp -readme -f html duckdb/ -o doc	
 
 fmt: 
-	v fmt -w main.v
+	v fmt -w duckdb
 
 test:
 	v -stats test tests/
