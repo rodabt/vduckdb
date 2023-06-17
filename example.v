@@ -22,7 +22,16 @@ fn main() {
 		println('Error connecting to DB: ${res}')
 	}
 
-	query := "with data as (select id+10 as x, id*250 as y, 'test' as zzz from range(10) tbl(id)) select * from data"
+	query := "
+	-- This is a comment
+	with data as (
+		select 
+			id+10 as x, 
+			id*250 as y, 
+			'test' as zzz 
+		from range(10) tbl(id)
+	) select * from data
+	"
 	println("Query:\n${query}\n")
 	
 	res = duckdb.query(conn.conn, query.str, result)
@@ -46,9 +55,10 @@ fn main() {
 		column_names[index] = unsafe { duckdb.column_name(result, u64(index)).vstring() }
 	}
 
-	duckdb.print_table(arr, column_names)
 	println('Row count: ${num_rows}')
 	println('Column count: ${num_columns}')
+
+	duckdb.print_table(arr, column_names)
 
 	// Terminate
 	duckdb.destroy_result(result)
