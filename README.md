@@ -1,4 +1,4 @@
-# vduck 0.1.0
+# vduck 0.2.0
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
@@ -58,6 +58,7 @@ Pull requests are welcome
 
 ## Changelog
 
+- 06/19/2023: Added column type identification. Breaking change: dropped `print_table` (use termtable if you need to print to stdout)
 - 06/09/2023: Fixed installation process and import reference. Bump to version 0.1.0
 - 06/07/2023: Added docs generator
 - 05/28/2023: Added instructions for libduckdb on Linux

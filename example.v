@@ -1,4 +1,5 @@
-import rodabt.vduck.duckdb
+import duckdb
+import termtable
 
 
 fn main() {
@@ -7,7 +8,7 @@ fn main() {
 	conn := &duckdb.Connection{}
 	result := &duckdb.Result{}
 
-	println("\nvduck version: ${duckdb.vduck_version()}")
+	println("\nvduck version: ${duckdb.vduck_version()}\n")
 
 	file := ':memory:'
 	mut res := duckdb.open(file.str, db)
@@ -45,23 +46,48 @@ fn main() {
 
 	mut arr := [][]string{len: int(num_rows), init: []string{len: int(num_columns)}}
 	for r in 0 .. num_rows {
-		for c in 0 .. num_columns {
-			arr[r][c] = unsafe { duckdb.value_varchar(result, c, r).vstring() }
+		for c in 0 .. num_columns { 
+			if r == 0 { 
+				arr[r][c] = unsafe { duckdb.column_name(result, u64(c)).vstring() } 
+			} else { 
+				arr[r][c] = unsafe { duckdb.value_varchar(result, c, r).vstring() } 
+			}
 		}
 	}
 
-	mut column_names := []string{len: int(num_columns), init:''}
-	for index, _ in column_names {
-		column_names[index] = unsafe { duckdb.column_name(result, u64(index)).vstring() }
+	println("\nColumns info:")
+	mut v_type := ''
+	for j in 0 .. num_columns {
+		mut col_name := unsafe { duckdb.column_name(result, u64(j)).vstring() } 
+		mut col_type := duckdb.column_type(result, u64(j))
+		match col_type {
+			.duckdb_type_varchar {
+				v_type = 'varchar'
+			}
+			.duckdb_type_bigint {
+				v_type = 'i64'
+			}
+			else {
+				v_type = 'other'
+			}
+		} 
+		println("Name: '${col_name}' - V type: (${v_type})")
 	}
 
-	println('Row count: ${num_rows}')
-	println('Column count: ${num_columns}')
-
-	duckdb.print_table(arr, column_names)
-
-	// Terminate
-	duckdb.destroy_result(result)
-	duckdb.disconnect(conn)
-	duckdb.close(db)
+	println("\nSample data:")
+	table := termtable.Table{
+		data: arr
+		style: .fancy_grid
+		header_style: .bold
+		align: .left
+		orientation: .row
+		padding: 1
+		tabsize: 4		
+	}
+	println(table)
+	defer {
+		duckdb.destroy_result(result)
+		duckdb.disconnect(conn)
+		duckdb.close(db)
+	}
 }

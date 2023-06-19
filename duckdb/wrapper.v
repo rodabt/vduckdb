@@ -68,11 +68,6 @@ pub:
 	internal_data            voidptr
 }
 
-pub struct Arrow {
-pub:
-	arrw voidptr
-}
-
 pub enum State {
 	duckdbsuccess = 0
 	duckdberror = 1
@@ -155,39 +150,48 @@ pub fn destroy_result(result &Result) {
 	C.duckdb_destroy_result(result)
 }
 
-fn C.duckdb_result_chunk_count(result Result) u64
-pub fn result_chunk_count(result Result) u64 {
-	return C.duckdb_result_chunk_count(result)
-}
-
-fn C.duckdb_result_get_chunk(result Result, chunk_index u64) &Data_chunk
-pub fn result_get_chunk(result Result, chunk_index u64) &Data_chunk {
-	return C.duckdb_result_get_chunk(result, chunk_index)
-}
-
-fn C.duckdb_data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector
-pub fn data_chunk_get_vector(chunk &Data_chunk, col_idx u64) &Vector {
-	return C.duckdb_data_chunk_get_vector(chunk, col_idx)
-}
-
-// DEPRECATED:
-fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
-pub fn value_varchar(result &Result, col u64, row u64) &char {
-	return C.duckdb_value_varchar(result, col, row)
+fn C.duckdb_column_type(result &Result, col u64) Type
+pub fn column_type(result &Result, col u64) Type {
+	return C.duckdb_column_type(result, col)
 }
 
 /*
-* ARROW
+* VALUE TYPES
 */
 
-fn C.duckdb_query_arrow(connection &Connection, query &char, result &Arrow) State
-pub fn query_arrow(connection &Connection, query &char, result &Arrow) State {
-	return C.duckdb_query_arrow(connection, query, result)
+fn C.duckdb_value_boolean(result &Result, col u64, row u64) bool
+pub fn value_boolean(result &Result, col u64, row u64) bool {
+	return C.duckdb_value_boolean(result, col, row)
 }
 
-fn C.duckdb_destroy_arrow(result &Arrow)
-pub fn destroy_arrow(result &Arrow) {
-	C.duckdb_destroy_arrow(result)
+fn C.duckdb_value_int8(result &Result, col u64, row u64) i8
+pub fn value_int8(result &Result, col u64, row u64) i8 {
+	return C.duckdb_value_int8(result, col, row)
+}
+
+fn C.duckdb_value_int16(result &Result, col u64, row u64) i16
+pub fn value_int16(result &Result, col u64, row u64) i16 {
+	return C.duckdb_value_int16(result, col, row)
+}
+
+fn C.duckdb_value_int32(result &Result, col u64, row u64) i32
+pub fn value_int32(result &Result, col u64, row u64) i32 {
+	return C.duckdb_value_int32(result, col, row)
+}
+
+fn C.duckdb_value_int64(result &Result, col u64, row u64) i64
+pub fn value_int64(result &Result, col u64, row u64) i64 {
+	return C.duckdb_value_int64(result, col, row)
+}
+
+fn C.duckdb_value_float(result &Result, col u64, row u64) f32
+pub fn value_float(result &Result, col u64, row u64) f32 {
+	return C.duckdb_value_float(result, col, row)
+}
+
+fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
+pub fn value_varchar(result &Result, col u64, row u64) &char {
+	return C.duckdb_value_varchar(result, col, row)
 }
 
 /*
