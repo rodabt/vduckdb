@@ -73,16 +73,6 @@ pub enum State {
 	duckdberror = 1
 }
 
-pub struct Data_chunk {
-pub:
-	dtck voidptr
-}
-
-pub struct Vector {
-pub:
-	vctr voidptr
-}
-
 pub struct String {
 pub:
 	data string
@@ -141,8 +131,9 @@ pub fn column_count(result &Result) u64 {
 }
 
 fn C.duckdb_column_name(result &Result, col_idx u64) &char
-pub fn column_name(result &Result, col_idx u64) &char {
-	return C.duckdb_column_name(result, col_idx)
+pub fn column_name(result &Result, col_idx u64) string {
+	ret := unsafe { C.duckdb_column_name(result, col_idx).vstring() }
+	return ret
 }
 
 fn C.duckdb_destroy_result(result &Result)
@@ -189,9 +180,15 @@ pub fn value_float(result &Result, col u64, row u64) f32 {
 	return C.duckdb_value_float(result, col, row)
 }
 
+fn C.duckdb_value_double(result &Result, col u64, row u64) f64
+pub fn value_double(result &Result, col u64, row u64) f64 {
+	return C.duckdb_value_double(result, col, row)
+}
+
 fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
-pub fn value_varchar(result &Result, col u64, row u64) &char {
-	return C.duckdb_value_varchar(result, col, row)
+pub fn value_string(result &Result, col u64, row u64) string {
+	ret := unsafe { C.duckdb_value_varchar(result, col, row).vstring() }
+	return ret
 }
 
 /*

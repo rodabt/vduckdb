@@ -1,6 +1,6 @@
 Module {
     name: 'vduck'
     description: 'A DuckDB V wrapper'
-    version: '0.2.0'
+    version: '0.3.0'
     dependencies: []
 }

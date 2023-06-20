@@ -1,8 +1,8 @@
-# vduck 0.2.0
+# vduck 0.3.0
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
-ATTENTION: this version is in alpha stage, use at your own risk.
+This library is still in alpha stage, use at your own risk.
 
 ## Requirements
 
@@ -48,9 +48,9 @@ Use `make docs` to create HTML documentation in `doc` folder
 - [x] Define as module
 - [x] Added tests
 - [x] Write base documentation
+- [ ] Map all definitions from `duckdb.h` header file to their V counterparts
 - [ ] Add website and tutorials
 - [ ] Build integration with V ORM
-- [ ] Map all definitions from `duckdb.h` header file to their V counterparts
 
 ## Contributing
 
@@ -58,7 +58,11 @@ Pull requests are welcome
 
 ## Changelog
 
-- 06/19/2023: Added column type identification. Breaking change: dropped `print_table` (use termtable if you need to print to stdout)
+- 06/19/2023:
+  - Added column type identification. Breaking change: dropped `print_table` (use termtable if you need to print to stdout)
+  - Added specific returning types for most common V types, except dates
+  - Changed to a better data example (from [https://www.datablist.com/learn/csv/download-sample-csv-files])
+  - Added more tests
 - 06/09/2023: Fixed installation process and import reference. Bump to version 0.1.0
 - 06/07/2023: Added docs generator
 - 05/28/2023: Added instructions for libduckdb on Linux
