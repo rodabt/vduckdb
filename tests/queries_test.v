@@ -1,4 +1,4 @@
-import duckdb
+import vduckdb as duckdb
 
 fn test__simple_query() {
 	db := &duckdb.Database{}

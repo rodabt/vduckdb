@@ -1,7 +1,7 @@
 // Copyright (c) 2023 Rodrigo Abt. All rights reserved.
 // Use of this source code is governed by an MIT license
 // that can be found in the LICENSE file.
-module duckdb
+module vduckdb
 
 // #flag -L.
 #flag -lduckdb

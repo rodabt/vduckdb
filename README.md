@@ -1,4 +1,4 @@
-# vduck 0.3.0
+# vduckdb 0.3.0
 
 A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
@@ -12,7 +12,7 @@ This library is still in alpha stage, use at your own risk.
 ## Installing from VPM
 
 ```bash
-v install rodabt.vduck
+v install vduckdb
 ```
 
 ### Installing `libduckdb.so` in Linux
@@ -24,7 +24,7 @@ v install rodabt.vduck
 ## Main usage
 
 ```v
-import rodabt.vduck.duckdb
+import vduckdb as duckdb
 
 fn main() {
   db := &duckdb.Database{}
@@ -59,6 +59,7 @@ Pull requests are welcome
 
 ## Changelog
 
+- 06/20/2023: Renamed module to vduckdb
 - 06/19/2023:
   - Added column type identification. Breaking change: dropped `print_table` (use termtable if you need to print to stdout)
   - Added specific returning types for most common V types, except dates

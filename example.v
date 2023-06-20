@@ -1,4 +1,4 @@
-import duckdb
+import vduckdb as duckdb
 import termtable
 
 
@@ -8,7 +8,7 @@ fn main() {
 	conn := &duckdb.Connection{}
 	result := &duckdb.Result{}
 
-	println("\nvduck version: ${duckdb.vduck_version()}\n")
+	println("\nvduckdb version: ${duckdb.vduckdb_version()}\n")
 
 	file := ':memory:'
 	mut res := duckdb.open(file.str, db)

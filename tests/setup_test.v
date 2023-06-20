@@ -1,4 +1,4 @@
-import duckdb
+import vduckdb as duckdb 
 import os
 
 
