@@ -37,7 +37,7 @@ fn main() {
 }
 ```
 
-Check [example.v](example.v) for a more detailed example
+Check [examples/simple_example.v](examples/simple_example.v) for a more detailed example
 
 ## Documentation
 

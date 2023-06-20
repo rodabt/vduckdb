@@ -5,4 +5,3 @@ libduckdb.so
 *.csv
 tmp/
 doc/*
-example.v
