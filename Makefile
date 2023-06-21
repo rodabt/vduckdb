@@ -4,9 +4,9 @@ run:
 	v run example.v
 
 docs:
-	VDOC_SORT=false v doc -no-timestamp -readme -f html duckdb/ -o doc	
+	VDOC_SORT=false v doc -no-timestamp -readme -f html vduckdb/ -o doc
 
-fmt: 
+fmt:
 	v fmt -w vduckdb
 
 test:
