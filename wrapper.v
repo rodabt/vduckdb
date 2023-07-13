@@ -1,10 +1,7 @@
-// Copyright (c) 2023 Rodrigo Abt. All rights reserved.
-// Use of this source code is governed by an MIT license
-// that can be found in the LICENSE file.
-module vduckdb
+module main
 
-// #flag -L.
-#flag -lduckdb
+import os
+import dl
 
 pub struct Database {
 pub:
@@ -79,123 +76,78 @@ pub:
 	size u64
 }
 
-/*
-* OPEN and CONNECTION
-*/
+type FNOpen = fn (&char, &Database) State
 
-fn C.duckdb_open(path &char, database &Database) State
+type FNConnect = fn (&Database, &Connection) State
 
-// Opens a new database file. For in memory user `:memory:` as path
-pub fn open(path &char, database &Database) State {
-	return C.duckdb_open(path, database)
-}
+type FNDisconnect = fn (&Connection)
 
-fn C.duckdb_connect(database &Database, connection &Connection) State
+type FNClose = fn (&Database)
 
-// Defines a new connection for a database
-pub fn connect(database &Database, connection &Connection) State {
-	return C.duckdb_connect(database, connection)
-}
+type FNQuery = fn (&Connection, &char, &Result) State
 
-fn C.duckdb_disconnect(connection &Connection)
+type FNCount = fn (&Result) u64
 
-// Disconnects from database
-pub fn disconnect(connection &Connection) {
-	C.duckdb_disconnect(connection)
-}
+type FNColName = fn (&Result, u64) &char
 
-fn C.duckdb_close(database &Database)
+type FNColType = fn (&Result, u64) Type
 
-// Closes database
-pub fn close(database &Database) {
-	C.duckdb_close(database)
-}
+type FNDestroyRes = fn (&Result)
 
-/*
-* QUERY AND RESULTS
-*/
+type FNValueBoolean = fn (&Result, u64, u64) bool
 
-fn C.duckdb_query(connection &Connection, query &char, result &Result) State
-pub fn query(connection &Connection, query &char, result &Result) State {
-	return C.duckdb_query(connection, query, result)
-}
+type FNValueInt8 = fn (&Result, u64, u64) i8
 
-fn C.duckdb_row_count(result &Result) u64
-pub fn row_count(result &Result) u64 {
-	return C.duckdb_row_count(result)
-}
+type FNValueInt16 = fn (&Result, u64, u64) i16
 
-fn C.duckdb_column_count(result &Result) u64
-pub fn column_count(result &Result) u64 {
-	return C.duckdb_column_count(result)
-}
+type FNValueInt32 = fn (&Result, u64, u64) i32
 
-fn C.duckdb_column_name(result &Result, col_idx u64) &char
-pub fn column_name(result &Result, col_idx u64) string {
-	ret := unsafe { C.duckdb_column_name(result, col_idx).vstring() }
+type FNValueInt64 = fn (&Result, u64, u64) i64
+
+type FNValueFloat = fn (&Result, u64, u64) f32
+
+type FNValueDouble = fn (&Result, u64, u64) f64
+
+type FNValueVarchar = fn (&Result, u64, u64) &char
+
+
+const (
+	library_file_path     = os.join_path(os.dir(@FILE), dl.get_libname('lib/libduckdb'))
+	handle                = dl.open_opt(library_file_path, dl.rtld_lazy) or { panic(err) }
+	duckdb_open           = FNOpen(dl.sym_opt(handle, 'duckdb_open') or { panic(err) })
+	duckdb_connect        = FNConnect(dl.sym_opt(handle, 'duckdb_connect') or { panic(err) })
+	duckdb_disconnect     = FNDisconnect(dl.sym_opt(handle, 'duckdb_disconnect') or { panic(err) })
+	duckdb_close          = FNClose(dl.sym_opt(handle, 'duckdb_close') or { panic(err) })
+	duckdb_query          = FNQuery(dl.sym_opt(handle, 'duckdb_query') or { panic(err) })
+	duckdb_row_count      = FNCount(dl.sym_opt(handle, 'duckdb_row_count') or { panic(err) })
+	duckdb_column_count   = FNCount(dl.sym_opt(handle, 'duckdb_column_count') or { panic(err) })
+	duckdb_column_chars   = FNColName(dl.sym_opt(handle, 'duckdb_column_name') or { panic(err) })
+	duckdb_column_type    = FNColType(dl.sym_opt(handle, 'duckdb_column_type') or { panic(err) })
+	duckdb_destroy_result = FNDestroyRes(dl.sym_opt(handle, 'duckdb_destroy_result') or {
+		panic(err)
+	})
+	duckdb_value_boolean  = FNValueBoolean(dl.sym_opt(handle, 'duckdb_value_boolean') or {
+		panic(err)
+	})
+	duckdb_value_int8     = FNValueInt8(dl.sym_opt(handle, 'duckdb_value_int8') or { panic(err) })
+	duckdb_value_int16    = FNValueInt16(dl.sym_opt(handle, 'duckdb_value_int16') or { panic(err) })
+	duckdb_value_int32    = FNValueInt32(dl.sym_opt(handle, 'duckdb_value_int32') or { panic(err) })
+	duckdb_value_int64    = FNValueInt64(dl.sym_opt(handle, 'duckdb_value_int64') or { panic(err) })
+	duckdb_value_float    = FNValueFloat(dl.sym_opt(handle, 'duckdb_value_float') or { panic(err) })
+	duckdb_value_double   = FNValueDouble(dl.sym_opt(handle, 'duckdb_value_double') or {
+		panic(err)
+	})
+	duckdb_value_varchar  = FNValueVarchar(dl.sym_opt(handle, 'duckdb_value_varchar') or {
+		panic(err)
+	})
+)
+
+pub fn duckdb_value_string(result &Result, col u64, row u64) string {
+	ret := unsafe { duckdb_value_varchar(result, col, row).vstring() }
 	return ret
 }
 
-fn C.duckdb_destroy_result(result &Result)
-pub fn destroy_result(result &Result) {
-	C.duckdb_destroy_result(result)
-}
-
-fn C.duckdb_column_type(result &Result, col u64) Type
-pub fn column_type(result &Result, col u64) Type {
-	return C.duckdb_column_type(result, col)
-}
-
-/*
-* VALUE TYPES
-*/
-
-fn C.duckdb_value_boolean(result &Result, col u64, row u64) bool
-pub fn value_boolean(result &Result, col u64, row u64) bool {
-	return C.duckdb_value_boolean(result, col, row)
-}
-
-fn C.duckdb_value_int8(result &Result, col u64, row u64) i8
-pub fn value_int8(result &Result, col u64, row u64) i8 {
-	return C.duckdb_value_int8(result, col, row)
-}
-
-fn C.duckdb_value_int16(result &Result, col u64, row u64) i16
-pub fn value_int16(result &Result, col u64, row u64) i16 {
-	return C.duckdb_value_int16(result, col, row)
-}
-
-fn C.duckdb_value_int32(result &Result, col u64, row u64) i32
-pub fn value_int32(result &Result, col u64, row u64) i32 {
-	return C.duckdb_value_int32(result, col, row)
-}
-
-fn C.duckdb_value_int64(result &Result, col u64, row u64) i64
-pub fn value_int64(result &Result, col u64, row u64) i64 {
-	return C.duckdb_value_int64(result, col, row)
-}
-
-fn C.duckdb_value_float(result &Result, col u64, row u64) f32
-pub fn value_float(result &Result, col u64, row u64) f32 {
-	return C.duckdb_value_float(result, col, row)
-}
-
-fn C.duckdb_value_double(result &Result, col u64, row u64) f64
-pub fn value_double(result &Result, col u64, row u64) f64 {
-	return C.duckdb_value_double(result, col, row)
-}
-
-fn C.duckdb_value_varchar(result &Result, col u64, row u64) &char
-pub fn value_string(result &Result, col u64, row u64) string {
-	ret := unsafe { C.duckdb_value_varchar(result, col, row).vstring() }
+pub fn duckdb_column_name(result &Result, col_idx u64) string {
+	ret := unsafe { duckdb_column_chars(result, col_idx).vstring() }
 	return ret
-}
-
-/*
-* METADATA
-*/
-
-fn C.duckdb_library_version() &char
-pub fn library_version() &char {
-	return C.duckdb_library_version()
 }
