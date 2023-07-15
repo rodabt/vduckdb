@@ -1,13 +1,10 @@
-.PHONY: run docs fmt test
-
-run:
-	v run example.v
+.PHONY: docs fmt test
 
 docs:
-	VDOC_SORT=false v doc -no-timestamp -readme -f html vduckdb/ -o doc
+	VDOC_SORT=false v doc -no-timestamp -readme -f html ../vduck -o docs
 
 fmt:
-	v fmt -w vduckdb
+	v fmt -w wrapper.v
 
 test:
-	v -stats test tests/
+	v -stats test *_test.v

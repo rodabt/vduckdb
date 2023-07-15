@@ -1,4 +1,4 @@
-module main
+module vduckdb
 
 import os
 import dl
@@ -109,7 +109,6 @@ type FNValueFloat = fn (&Result, u64, u64) f32
 type FNValueDouble = fn (&Result, u64, u64) f64
 
 type FNValueVarchar = fn (&Result, u64, u64) &char
-
 
 const (
 	library_file_path     = os.join_path(os.dir(@FILE), dl.get_libname('lib/libduckdb'))
