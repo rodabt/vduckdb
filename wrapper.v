@@ -2,6 +2,7 @@ module vduckdb
 
 import os
 import dl
+import v.vmod
 
 pub struct Database {
 pub:
@@ -149,4 +150,9 @@ pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 pub fn duckdb_column_name(result &Result, col_idx u64) string {
 	ret := unsafe { duckdb_column_chars(result, col_idx).vstring() }
 	return ret
+}
+
+pub fn version() string {
+	vm := vmod.decode(@VMOD_FILE) or { panic(err) }
+	return vm.version
 }
