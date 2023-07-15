@@ -17,7 +17,7 @@ v install vduckdb
 ## Main usage
 
 ```v
-import rodabt.vduckdb
+import vduckdb
 
 fn main() {
   db := &vduckdb.Database{}
