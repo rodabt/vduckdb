@@ -4,6 +4,8 @@ A V wrapper for duckdb, using the C/C++ libraries provided by DuckDB.
 
 This library is now in beta and should be safe to use in most scenarios.
 
+_WARNING: At the moment it's working only for Linux_.  
+
 ## Requirements
 
 - A working V version 0.3.x or higher
