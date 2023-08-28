@@ -13,12 +13,6 @@ fn main() {
 		println('Error opening DB ${file}: ${res}')
 	}
 
-	res = v.connect()
-
-	if res == vduckdb.State.duckdberror {
-		println('Error connecting to DB: ${res}')
-	}
-
 	sql := "select * from 'people-100.csv'"
 	println('Query:\n${sql}\n')
 

@@ -24,7 +24,7 @@ pub mut:
 	with_type		bool
 }
 
-
+// Generates a dictionary of all fields returned by a query 
 fn (mut d DuckDB) build_columns_map() {
 	for j in 0 .. d.num_columns {
 		mut col_name := duckdb_column_name(d.result, j)
@@ -41,6 +41,7 @@ fn (mut d DuckDB) build_columns_map() {
 	}
 }
 
+// Builds an array of json maps containing the resulting data from the query
 fn (mut d DuckDB) build_data() {
 	mut arr := []map[string]json2.Any{}
 	for r in 0 .. d.num_rows {
@@ -56,17 +57,14 @@ fn (mut d DuckDB) build_data() {
 	d.data = arr
 }
 
-
+// Opens and connects to a database. To use in memory use ':memory:' as filename
 pub fn (mut d DuckDB) open(filename string) State {
-	res := duckdb_open(filename.str, d.db)
+	mut res := duckdb_open(filename.str, d.db)
+	res = duckdb_connect(d.db.db, d.conn)
 	return res
 }
 
-pub fn (mut d DuckDB) connect() State {
-	res := duckdb_connect(d.db.db, d.conn)
-	return res
-}
-
+// Runs a query
 pub fn (mut d DuckDB) query(sql string) State {
 	res := duckdb_query(d.conn.conn, sql.str, d.result)
 	d.num_rows = int(duckdb_row_count(d.result))
@@ -77,10 +75,12 @@ pub fn (mut d DuckDB) query(sql string) State {
 	return res
 }
 
+// Returns a tuple of the number of rows and columns
 pub fn (mut d DuckDB) dim() (int,int) {
 	return d.num_rows, d.num_columns
 }
 
+// Outputs the data as a table. Check OutputConfig for options
 pub fn (d DuckDB) data(o OutputConfig) string {
 	limit := if o.max_rows < 0 {
 		d.num_rows
@@ -91,12 +91,14 @@ pub fn (d DuckDB) data(o OutputConfig) string {
 	return out
 }
 
+// Closes the connections, database and destroys results
 pub fn (mut d DuckDB) close() {
 	duckdb_destroy_result(d.result)
 	duckdb_disconnect(d.conn)
 	duckdb_close(d.db)
 }
 
+// Returns current vduckdb version
 pub fn version() string {
 	vm := vmod.decode(@VMOD_FILE) or { panic(err) }
 	return vm.version
