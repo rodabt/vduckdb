@@ -1,21 +1,31 @@
 # Changelog
 
-- 08/27/2023 - Convenience functions and wrappers. No more termtable dependences
-- 06/15/2023 - Huge refactoring
-  - No more libduckdb previous installation. Shared library is shipped and loaded dynamically with the module
-  - A more simplified wrapper using const functions
-- 06/20/2023 - Renamed module to vduckdb
-- 06/19/2023:
-  - Added column type identification. Breaking change: dropped `print_table` (use termtable if you need to print to stdout)
-  - Added specific returning types for most common V types, except dates
-  - Changed to a better data example (from [https://www.datablist.com/learn/csv/download-sample-csv-files])
-  - Added more tests
-- 06/09/2023 - Fixed installation process and import reference. Bump to version 0.1.0
-- 06/07/2023 - Added docs generator
-- 05/28/2023 - Added instructions for libduckdb on Linux
-- 05/27/2023 - Added print_table utility
-- 05/21/2023 - Added simple data output with value_varchar
-- 05/20/2023 - Refactored as V Module
-- 05/17/2023 - Completed a simple query cycle
-- 05/16/2023 - Added connection and query functions, and a simple Makefile
-- 05/12/2023 - First commit to test library integration with working code
+## 2023-08-31
+
+- Simplified api
+- Tested on Linux, Mac, and Windows
+
+## 2023-08-27
+
+- No more termtable dependences
+
+## 20230-07-15
+
+- Huge refactoring
+- No need to install libduckdb as a requirement. Shared library is shipped and loaded dynamically with the module
+- Simplified wrapper using const functions
+
+## 2023-06-20
+
+- Module renamed to vduckdb
+
+## 2023-06-19
+
+- Added column type identification. Breaking change: dropped `print_table`
+- Added specific returning types for most common V types, except dates
+- Better data example (from [https://www.datablist.com/learn/csv/download-sample-csv-files])
+- Added more tests
+
+## 2023-05-12
+
+- First commit to test library integration with working code

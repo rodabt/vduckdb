@@ -1,8 +1,6 @@
 # vduckdb 0.5.0
 
-A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios.
-
-_WARNING: At the moment it's working only for Linux_.  
+A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS
 
 ## Requirements
 
@@ -24,28 +22,28 @@ fn main() {
   mut db := vduckdb.DuckDB{}
   println('duckdb version: ${vduckdb.version()}\n')
   file := ':memory:'
-  mut res := db.open(file)
+  mut result_state := db.open(file)
 
-  if res == vduckdb.State.duckdberror {
-    println('Error opening DB ${file}: ${res}')
+  if result_state == vduckdb.State.duckdberror {
+    println('Error opening DB ${file}')
   }
 
-  res = db.connect()
+  result_state = db.connect()
 
-  if res == vduckdb.State.duckdberror {
-    println('Error connecting to DB: ${res}')
+  if result_state == vduckdb.State.duckdberror {
+    println('Error connecting to DB')
   }
 
   sql := "select * from 'people-100.csv'"
   println('Query:\n${sql}\n')
 
-  res = db.query(sql)
+  result_state = db.query(sql)
 
-  if res == vduckdb.State.duckdberror {
-    println('Error executing query: ${res}')
+  if result_state == vduckdb.State.duckdberror {
+    println('Error executing query: ${sql}')
   }
 
-  println('Columns ${v.columns}')
+  println('Columns ${db.columns}')
   println(db.data(max_rows: -1, mode: 'box'))
 
   defer {
@@ -56,7 +54,7 @@ fn main() {
 
 ## Documentation
 
-`make docs` will generate HTML documentation in a new `docs` folder
+Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `docs` folder
 
 ## Roadmap
 

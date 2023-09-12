@@ -13,10 +13,10 @@ fn main() {
 		println('Error opening DB ${file}: ${res}')
 	}
 
-	sql := "select * from 'people-100.csv'"
-	println('Query:\n${sql}\n')
+	q := "select Index, Email, \"Date of birth\" from 'people-100.csv'"
+	println('Query:\n${q}\n')
 
-	res = v.query(sql)
+	res = v.query(q) or { panic(err) }
 
 	if res == vduckdb.State.duckdberror {
 		println('Error executing query: ${res}')
@@ -24,7 +24,7 @@ fn main() {
 
 	println(v.columns)
 
-	println(v.data(max_rows: -1, mode: 'box'))
+	println(v.data(max_rows: 10, mode: 'box'))
 
 	defer {
 		v.close()
