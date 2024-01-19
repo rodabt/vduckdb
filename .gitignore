@@ -1,4 +1,3 @@
 *.db*
-*.csv
 tmp/
 docs/*
