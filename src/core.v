@@ -3,6 +3,7 @@ module vduckdb
 import v.vmod
 import x.json2
 import math
+import os
 
 pub struct DuckDB {
 pub mut:
@@ -16,7 +17,7 @@ pub mut:
 	data        []map[string]json2.Any
 }
 
-[params]
+@[params]
 pub struct OutputConfig {
 pub mut:
 	max_rows  int    = 20 // -1 = all rows
@@ -24,42 +25,48 @@ pub mut:
 	with_type bool
 }
 
-// Generates a dictionary of all fields returned by a query
+// Generates a map of all fields returned by a query
 fn (mut d DuckDB) build_columns_map() {
 	for j in 0 .. d.num_columns {
 		mut col_name := duckdb_column_name(d.result, j)
 		mut col_type := duckdb_column_type(d.result, j).str()
-		c := match col_type {
-			// TODO: Add all types
-			'duckdb_type_boolean' { 'bool' }
-			'duckdb_type_float' { 'float' }
-			'duckdb_type_varchar' { 'string' }
-			'duckdb_type_date' { 'date' }
-			'duckdb_type_bigint' { 'bigint' }
-			else { col_type }
-		}
-		d.columns[col_name] = c
+		d.columns[col_name] = col_type.replace('duckdb_type_','')
 	}
 }
 
-// Builds an array of json maps containing the resulting data from the query
+// Builds an array of json2.Any maps containing the resulting data from the query
+@[direct_array_access]
 fn (mut d DuckDB) build_data() {
+	mut col := ''
 	mut arr := []map[string]json2.Any{}
 	for r in 0 .. d.num_rows {
 		mut row := map[string]json2.Any{}
 		for idx, key in d.columns.keys() {
-			match key {
-				'string' {
+			col = d.columns[key]
+			match col {
+				'bool' {
+					row[key] = json2.Any(duckdb_value_boolean(d.result, u64(idx), r))
+				}								
+				'varchar' {
 					row[key] = json2.Any(duckdb_value_string(d.result, u64(idx), r))
 				}
 				'bigint' {
 					row[key] = json2.Any(duckdb_value_int64(d.result, u64(idx), r))
 				}
+				'hugeint' {
+					row[key] = json2.Any(json2.encode(duckdb_value_hugeint(d.result, u64(idx), r)))
+				}				
 				'float' {
 					row[key] = json2.Any(duckdb_value_float(d.result, u64(idx), r))
-				}				
+				}
+				'double' {
+					row[key] = json2.Any(duckdb_value_double(d.result, u64(idx), r))
+				}
+				'timestamp' {
+					row[key] = json2.Any(json2.encode(duckdb_value_timestamp(d.result, u64(idx), r)))
+				}
 				else {
-					row[key] = json2.Any(duckdb_value_string(d.result, u64(idx), r))
+					row[key] = json2.Any('')
 				}
 			}
 		}
@@ -68,8 +75,11 @@ fn (mut d DuckDB) build_data() {
 	d.data = arr
 }
 
-// Opens and connects to a database. To use in memory use ':memory:' as filename
-pub fn (mut d DuckDB) open(filename string) State {
+// Opens and connects to a database. Return error if file is not found. To use in memory use ':memory:' as filename
+pub fn (mut d DuckDB) open(filename string) !State {
+	if filename != ':memory:' && !os.exists(filename) {
+		return error("File '${filename}' not found")
+	}
 	mut res := duckdb_open(filename.str, d.db)
 	res = duckdb_connect(d.db.db, d.conn)
 	return res
@@ -98,7 +108,7 @@ pub fn (mut d DuckDB) dim() (int, int) {
 }
 
 // Outputs the data as a table. Check `OutputConfig` for options
-pub fn (d DuckDB) data(o OutputConfig) string {
+pub fn (d DuckDB) print_table(o OutputConfig) string {
 	limit := if o.max_rows < 0 {
 		d.num_rows
 	} else {
@@ -108,7 +118,7 @@ pub fn (d DuckDB) data(o OutputConfig) string {
 	return out
 }
 
-// Closes the connections, database and destroys results
+// Closes the connection, database, and destroys results
 pub fn (mut d DuckDB) close() {
 	duckdb_destroy_result(d.result)
 	duckdb_disconnect(d.conn)

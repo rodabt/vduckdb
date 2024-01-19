@@ -1,4 +1,4 @@
-# vduckdb 0.5.0
+# vduckdb 0.6.0
 
 A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS
 
@@ -22,29 +22,23 @@ fn main() {
   mut db := vduckdb.DuckDB{}
   println('duckdb version: ${vduckdb.version()}\n')
   file := ':memory:'
-  mut result_state := db.open(file)
+  mut result_state := db.open(file)!
 
   if result_state == vduckdb.State.duckdberror {
     println('Error opening DB ${file}')
   }
 
-  result_state = db.connect()
+  q := "select * from 'people-100.csv'"
+  println('Query:\n${q}\n')
+
+  result_state = db.query(q)!
 
   if result_state == vduckdb.State.duckdberror {
-    println('Error connecting to DB')
-  }
-
-  sql := "select * from 'people-100.csv'"
-  println('Query:\n${sql}\n')
-
-  result_state = db.query(sql)
-
-  if result_state == vduckdb.State.duckdberror {
-    println('Error executing query: ${sql}')
+    println('Error executing query: ${q}')
   }
 
   println('Columns ${db.columns}')
-  println(db.data(max_rows: -1, mode: 'box'))
+  println(db.print_table(max_rows: 10, mode: 'box'))
 
   defer {
     db.close()

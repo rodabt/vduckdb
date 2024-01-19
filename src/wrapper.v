@@ -71,70 +71,66 @@ pub enum State {
 
 struct String {
 pub:
-	data string
+	data &char
 	size u64
 }
 
 struct HugeInt {
+pub:
 	lower u64
 	upper i64
 }
 
 struct Decimal {
+pub:
 	width u8
 	scale u8
 	value HugeInt
 }
 
 struct Date {
+pub:
 	days i32
 }
 
+struct Time {
+pub:
+	micros i64
+}
+
+struct Interval {
+pub:
+	months i32
+	days i32
+	micros i64
+}
+
 type FNOpen = fn (&char, &Database) State
-
 type FNConnect = fn (&Database, &Connection) State
-
 type FNDisconnect = fn (&Connection)
-
 type FNClose = fn (&Database)
-
 type FNQuery = fn (&Connection, &char, &Result) State
-
 type FNCount = fn (&Result) u64
-
 type FNColName = fn (&Result, u64) &char
-
 type FNColType = fn (&Result, u64) Type
-
 type FNDestroyRes = fn (&Result)
-
 type FNValueBoolean = fn (&Result, u64, u64) bool
-
 type FNValueInt8 = fn (&Result, u64, u64) i8
-
 type FNValueInt16 = fn (&Result, u64, u64) i16
-
 type FNValueInt32 = fn (&Result, u64, u64) i32
-
 type FNValueInt64 = fn (&Result, u64, u64) i64
-
 type FNValueFloat = fn (&Result, u64, u64) f32
-
 type FNValueDouble = fn (&Result, u64, u64) f64
-
 type FNValueVarchar = fn (&Result, u64, u64) &char
-
+type FNValueHugeInt = fn (&Result, u64, u64) HugeInt
+type FNValueDecimal = fn (&Result, u64, u64) Decimal
+type FNValueDate = fn (&Result, u64, u64) Date
+type FNValueTime = fn (&Result, u64, u64) Time
+type FNValueTimestamp = fn (&Result, u64, u64) Time
+type FNValueInterval = fn (&Result, u64, u64) Interval
+type FNValueString = fn (&Result, u64, u64) String
 type FNResultError = fn (&Result) &char
-
-type FNValueHugeInt = fn (&Result) HugeInt
-
-type FNValueDecimal = fn (&Result) Decimal
-
-type FNValueDate = fn (&Result) Date
-
-/* type FNValueTime = fn (&Result) 
-type FNValueTimestamp = fn (&Result) 
-type FNValueInterval = fn (&Result)*/ 
+type FNVoidPtr = fn (voidptr)
 
 const (
 	handle                = dl.open_opt(library_file_path, dl.rtld_lazy) or { panic(err) }
@@ -147,9 +143,7 @@ const (
 	duckdb_column_count   = FNCount(dl.sym_opt(handle, 'duckdb_column_count') or { panic(err) })
 	duckdb_column_chars   = FNColName(dl.sym_opt(handle, 'duckdb_column_name') or { panic(err) })
 	duckdb_column_type    = FNColType(dl.sym_opt(handle, 'duckdb_column_type') or { panic(err) })
-	duckdb_destroy_result = FNDestroyRes(dl.sym_opt(handle, 'duckdb_destroy_result') or {
-		panic(err)
-	})
+	duckdb_destroy_result = FNDestroyRes(dl.sym_opt(handle, 'duckdb_destroy_result') or { panic(err)})
 	// Returning values
 	duckdb_value_boolean  = FNValueBoolean(dl.sym_opt(handle, 'duckdb_value_boolean') or { panic(err) })
 	duckdb_value_int8     = FNValueInt8(dl.sym_opt(handle, 'duckdb_value_int8') or { panic(err) })
@@ -159,28 +153,34 @@ const (
 	duckdb_value_float    = FNValueFloat(dl.sym_opt(handle, 'duckdb_value_float') or { panic(err) })
 	duckdb_value_double   = FNValueDouble(dl.sym_opt(handle, 'duckdb_value_double') or { panic(err) })
 	duckdb_value_varchar  = FNValueVarchar(dl.sym_opt(handle, 'duckdb_value_varchar') or { panic(err) })
-	duckdb_values_hugeint = FNValueHugeInt(dl.sym_opt(handle, 'duckdb_values_hugeint')) or { panic(err) }) 
-	duckdb_values_decimal = FNValueDecimal(dl.sym_opt(handle, 'duckdb_values_decimal')) or { panic(err) }) 
-	duckdb_values_date = FNValueDate(dl.sym_opt(handle, 'duckdb_values_date')) or { panic(err) }) 
-	/*duckdb_values_time = FNValueTime(dl.sym_opt(handle, 'duckdb_values_time')) or { panic(err) }) 
-	duckdb_values_timestamp = FNValueTimestamp(dl.sym_opt(handle, 'duckdb_values_timestamp')) or { panic(err) }) 
-	duckdb_values_interval = FNValueInterval(dl.sym_opt(handle, 'duckdb_values_interval')) or { panic(err) }) */
-	duckdb_result_error   = FNResultError(dl.sym_opt(handle, 'duckdb_result_error') or {
-		panic(err)
-	})
+	duckdb_value_str   = FNValueString(dl.sym_opt(handle, 'duckdb_value_string') or { panic(err) })
+	duckdb_value_hugeint = FNValueHugeInt(dl.sym_opt(handle, 'duckdb_value_hugeint') or { panic(err) }) 
+	duckdb_value_decimal = FNValueDecimal(dl.sym_opt(handle, 'duckdb_value_decimal') or { panic(err) }) 
+	duckdb_value_date = FNValueDate(dl.sym_opt(handle, 'duckdb_value_date') or { panic(err) }) 
+	duckdb_value_time = FNValueTime(dl.sym_opt(handle, 'duckdb_value_time') or { panic(err) }) 
+	duckdb_value_timestamp = FNValueTimestamp(dl.sym_opt(handle, 'duckdb_value_timestamp') or { panic(err) }) 
+	duckdb_value_interval = FNValueInterval(dl.sym_opt(handle, 'duckdb_value_interval') or { panic(err) })
+	duckdb_result_error   = FNResultError(dl.sym_opt(handle, 'duckdb_result_error') or { panic(err) })
+	duckdb_free = FNVoidPtr(dl.sym_opt(handle,'duckdb_free') or { panic(err) })
 )
 
-fn duckdb_value_string(result &Result, col u64, row u64) string {
-	ret := unsafe { duckdb_value_varchar(result, col, row).vstring() }
-	return ret
+// TODO: Check when row or col are out of bounds!!!
+pub fn duckdb_value_string(result &Result, col u64, row u64) string {
+	ret := unsafe { duckdb_value_varchar(result, col, row) };
+	if ret == unsafe { nil } {
+		return ''
+	}
+	s := unsafe { (*ret).vstring().clone() }
+	duckdb_free(ret)
+	return s
 }
 
-fn duckdb_query_error(result &Result) string {
+pub fn duckdb_query_error(result &Result) string {
 	ret := unsafe { duckdb_result_error(result).vstring() }
 	return ret
 }
 
-fn duckdb_column_name(result &Result, col_idx u64) string {
+pub fn duckdb_column_name(result &Result, col_idx u64) string {
 	ret := unsafe { duckdb_column_chars(result, col_idx).vstring() }
 	return ret
 }

@@ -37,6 +37,7 @@ const table_type = {
 	}
 }
 
+// TODO: Print in streaming fashion....
 fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
 	chars := vduckdb.table_type[o.mode].clone()
 

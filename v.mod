@@ -1,9 +1,9 @@
 Module {
     name: 'vduckdb'
-    description: 'A V wrapper for DuckDB database'
+    description: 'A V wrapper for the C API of DuckDB database'
 	author: 'Rodrigo Abt <rodrigo.abt@gmail.com>'
     license: 'MIT'
     repo_url: 'https://github.com/rodabt/vduckdb'
-    version: '0.5.0'
+    version: '0.6.0'
     dependencies: []
 }
