@@ -5,6 +5,8 @@ import x.json2
 import math
 import os
 
+// TODO: Implement better tests
+
 pub struct DuckDB {
 pub mut:
 	db          &Database   = &Database{}
@@ -53,6 +55,9 @@ fn (mut d DuckDB) build_data() {
 				'bigint' {
 					row[key] = json2.Any(duckdb_value_int64(d.result, u64(idx), r))
 				}
+				'smallint' {
+					row[key] = json2.Any(duckdb_value_int8(d.result, u64(idx), r))
+				}
 				'hugeint' {
 					row[key] = json2.Any(json2.encode(duckdb_value_hugeint(d.result, u64(idx), r)))
 				}				
@@ -64,6 +69,9 @@ fn (mut d DuckDB) build_data() {
 				}
 				'timestamp' {
 					row[key] = json2.Any(json2.encode(duckdb_value_timestamp(d.result, u64(idx), r)))
+				}
+				'date' {
+					row[key] = json2.Any(duckdb_value_date(d.result, u64(idx), r))
 				}
 				else {
 					row[key] = json2.Any('')

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2024-01-19
+
+- Fixed memory issues
+- Added date and smallint formats
+
 ## 2023-08-31
 
 - Simplified api

@@ -156,7 +156,7 @@ const (
 	duckdb_value_str   = FNValueString(dl.sym_opt(handle, 'duckdb_value_string') or { panic(err) })
 	duckdb_value_hugeint = FNValueHugeInt(dl.sym_opt(handle, 'duckdb_value_hugeint') or { panic(err) }) 
 	duckdb_value_decimal = FNValueDecimal(dl.sym_opt(handle, 'duckdb_value_decimal') or { panic(err) }) 
-	duckdb_value_date = FNValueDate(dl.sym_opt(handle, 'duckdb_value_date') or { panic(err) }) 
+	duckdb_value_dt = FNValueDate(dl.sym_opt(handle, 'duckdb_value_date') or { panic(err) }) 
 	duckdb_value_time = FNValueTime(dl.sym_opt(handle, 'duckdb_value_time') or { panic(err) }) 
 	duckdb_value_timestamp = FNValueTimestamp(dl.sym_opt(handle, 'duckdb_value_timestamp') or { panic(err) }) 
 	duckdb_value_interval = FNValueInterval(dl.sym_opt(handle, 'duckdb_value_interval') or { panic(err) })
@@ -173,6 +173,12 @@ pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 	s := unsafe { (*ret).vstring().clone() }
 	duckdb_free(ret)
 	return s
+}
+
+pub fn duckdb_value_date(result &Result, col u64, row u64) string {
+	days := unsafe { duckdb_value_dt(result, col, row).days }
+	cdate := start_date.add_days(days)
+	return cdate.strftime('%Y-%m-%d')
 }
 
 pub fn duckdb_query_error(result &Result) string {
