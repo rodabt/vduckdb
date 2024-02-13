@@ -1,6 +1,6 @@
-# vduckdb 0.6.0
+# vduckdb 0.6.1
 
-A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS
+A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS.
 
 ## Requirements
 
@@ -20,7 +20,8 @@ import vduckdb
 fn main() {
   
   mut db := vduckdb.DuckDB{}
-  println('duckdb version: ${vduckdb.version()}\n')
+  println('vduckdb version: ${vduckdb.version()}\n')
+  println('duckdb version: ${vduckdb.duckdb_library_version()}\n')
   file := ':memory:'
   mut result_state := db.open(file)!
 

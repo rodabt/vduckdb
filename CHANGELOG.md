@@ -1,6 +1,11 @@
 # Changelog
 
-## 2024-01-19
+## version 0.6.1: 2024-01-23
+
+- Added function to gey duckdb library version
+- Padded table output according to data type
+
+## version 0.6.0: 2024-01-19
 
 - Fixed memory issues
 - Added date and smallint formats
