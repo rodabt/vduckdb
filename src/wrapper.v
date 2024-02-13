@@ -131,6 +131,7 @@ type FNValueInterval = fn (&Result, u64, u64) Interval
 type FNValueString = fn (&Result, u64, u64) String
 type FNResultError = fn (&Result) &char
 type FNVoidPtr = fn (voidptr)
+type FNVersion = fn () &char
 
 const (
 	handle                = dl.open_opt(library_file_path, dl.rtld_lazy) or { panic(err) }
@@ -156,12 +157,13 @@ const (
 	duckdb_value_str   = FNValueString(dl.sym_opt(handle, 'duckdb_value_string') or { panic(err) })
 	duckdb_value_hugeint = FNValueHugeInt(dl.sym_opt(handle, 'duckdb_value_hugeint') or { panic(err) }) 
 	duckdb_value_decimal = FNValueDecimal(dl.sym_opt(handle, 'duckdb_value_decimal') or { panic(err) }) 
-	duckdb_value_date = FNValueDate(dl.sym_opt(handle, 'duckdb_value_date') or { panic(err) }) 
+	duckdb_value_dt = FNValueDate(dl.sym_opt(handle, 'duckdb_value_date') or { panic(err) }) 
 	duckdb_value_time = FNValueTime(dl.sym_opt(handle, 'duckdb_value_time') or { panic(err) }) 
 	duckdb_value_timestamp = FNValueTimestamp(dl.sym_opt(handle, 'duckdb_value_timestamp') or { panic(err) }) 
 	duckdb_value_interval = FNValueInterval(dl.sym_opt(handle, 'duckdb_value_interval') or { panic(err) })
 	duckdb_result_error   = FNResultError(dl.sym_opt(handle, 'duckdb_result_error') or { panic(err) })
 	duckdb_free = FNVoidPtr(dl.sym_opt(handle,'duckdb_free') or { panic(err) })
+	duckdb_lib_version = FNVersion(dl.sym_opt(handle,'duckdb_library_version') or { panic(err) })
 )
 
 // TODO: Check when row or col are out of bounds!!!
@@ -175,6 +177,12 @@ pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 	return s
 }
 
+pub fn duckdb_value_date(result &Result, col u64, row u64) string {
+	days := unsafe { duckdb_value_dt(result, col, row).days }
+	cdate := start_date.add_days(days)
+	return cdate.strftime('%Y-%m-%d')
+}
+
 pub fn duckdb_query_error(result &Result) string {
 	ret := unsafe { duckdb_result_error(result).vstring() }
 	return ret
@@ -182,5 +190,10 @@ pub fn duckdb_query_error(result &Result) string {
 
 pub fn duckdb_column_name(result &Result, col_idx u64) string {
 	ret := unsafe { duckdb_column_chars(result, col_idx).vstring() }
+	return ret
+}
+
+pub fn duckdb_library_version() string {
+	ret := unsafe { duckdb_lib_version().vstring() }
 	return ret
 }

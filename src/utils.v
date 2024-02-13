@@ -50,9 +50,9 @@ fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
 	for key in keys {
 		mut max_width := key.len
 		for row in data {
-			value := row[key] or { json2.Any('') }
-			if value.str().len > max_width {
-				max_width = value.str().len
+			value := (row[key] or { json2.Any('') }).str()
+			if value.len > max_width {
+				max_width = value.len
 			}
 		}
 		col_widths << max_width
@@ -93,9 +93,12 @@ fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
 	for row in data[0..limit] {
 		mut line := ''
 		for i, key in keys {
-			value := row[key] or { json2.Any('') }
-			line += chars['sep'] + ' ' + value.str() + ' '.repeat(col_widths[i] - value.str().len) +
-				' '
+			value := (row[key] or { json2.Any('') }).str()
+			if (row[key] or { json2.Any('') }) is string {
+				line += chars['sep'] + ' ' + value + ' '.repeat(col_widths[i] - value.len) + ' '
+			} else {
+				line += chars['sep'] + ' ' + ' '.repeat(col_widths[i] - value.len) + value + ' '
+			}
 		}
 		line += chars['sep']
 		table << line
