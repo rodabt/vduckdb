@@ -1,3 +1,4 @@
 *.db*
 tmp/
 docs/*
+.old/

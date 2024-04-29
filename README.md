@@ -1,4 +1,4 @@
-# vduckdb 0.6.1
+# vduckdb 0.6.2
 
 A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS.
 
@@ -9,13 +9,13 @@ A working V version (0.4.x or higher)
 ## Installation
 
 ```bash
-v install vduckdb
+v install rodabt.vduckdb
 ```
 
 ## Main usage
 
 ```v
-import vduckdb
+import rodabt.vduckdb
 
 fn main() {
   
