@@ -7,7 +7,7 @@ docs:
 	VDOC_SORT=false v doc -no-timestamp -readme -f html ./vduckdb -o docs
 
 fmt:
-	v fmt -w vduckdb/.
+	v fmt -w src/
 
 test:
 	v -stats test vduckdb/*_test.v

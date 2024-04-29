@@ -18,18 +18,18 @@ pub mut:
 @[params]
 pub struct OutputConfig {
 pub mut:
-	max_rows  int    = 100 		// -1 = all rows
-	mode      string = 'box' 	// Other modes: 'box', 'ascii'
+	max_rows  int    = 100 // -1 = all rows
+	mode      string = 'box' // Other modes: 'box', 'ascii'
 	with_type bool
 }
 
 // Generates a map of all fields returned by a query
 fn build_columns_map(d DuckDB) map[string]string {
-	mut columns := map[string]string{} 
+	mut columns := map[string]string{}
 	for j in 0 .. d.num_columns {
 		mut col_name := duckdb_column_name(d.result, j)
 		mut col_type := duckdb_column_type(d.result, j).str()
-		columns[col_name] = col_type.replace('duckdb_type_','')
+		columns[col_name] = col_type.replace('duckdb_type_', '')
 	}
 	return columns
 }
@@ -46,8 +46,11 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 			match col {
 				'bool' {
 					row[key] = json2.Any(duckdb_value_boolean(d.result, u64(idx), r))
-				}								
+				}
 				'varchar' {
+					row[key] = json2.Any(duckdb_value_string(d.result, u64(idx), r))
+				}
+				'blob' {
 					row[key] = json2.Any(duckdb_value_string(d.result, u64(idx), r))
 				}
 				'bigint' {
@@ -60,8 +63,9 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 					row[key] = json2.Any(duckdb_value_int16(d.result, u64(idx), r))
 				}
 				'hugeint' {
-					row[key] = json2.Any(json2.encode(duckdb_value_hugeint(d.result, u64(idx), r)))
-				}				
+					row[key] = json2.Any(json2.encode(duckdb_value_hugeint(d.result, u64(idx),
+						r)))
+				}
 				'float' {
 					row[key] = json2.Any(duckdb_value_float(d.result, u64(idx), r))
 				}
@@ -69,7 +73,8 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 					row[key] = json2.Any(duckdb_value_double(d.result, u64(idx), r))
 				}
 				'timestamp' {
-					row[key] = json2.Any(json2.encode(duckdb_value_timestamp(d.result, u64(idx), r)))
+					row[key] = json2.Any(json2.encode(duckdb_value_timestamp(d.result,
+						u64(idx), r)))
 				}
 				'date' {
 					row[key] = json2.Any(duckdb_value_date(d.result, u64(idx), r))
@@ -95,7 +100,7 @@ pub fn (mut d DuckDB) open(filename string) !State {
 pub fn (mut d DuckDB) query(q string) !State {
 	if d.last_query.len > 0 {
 		duckdb_destroy_result(d.result)
-		d.result = &vduckdb.Result{}
+		d.result = &Result{}
 	}
 	res := duckdb_query(d.conn.conn, q.str, d.result)
 	if res == State.duckdberror {
