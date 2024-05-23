@@ -10,4 +10,4 @@ fmt:
 	v fmt -w src/
 
 test:
-	v -stats test vduckdb/*_test.v
+	v -stats test src/*_test.v
