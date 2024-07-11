@@ -6,8 +6,8 @@ fn test_create_db() {
 	mut db := DuckDB{}
 	mut res := db.open('file.db')!
 	assert res == State.duckdbsuccess
-	os.rm('file.db')!
-	os.rm('file.db.wal')!
+	os.rm('file.db') or {}
+	os.rm('file.db.wal') or {}
 }
 
 fn test_connect_db() {

@@ -89,10 +89,30 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 	return arr
 }
 
+// Version that returns results as []map[string]string
+@[direct_array_access]
+pub fn (d DuckDB) get_array_as_string() []map[string]string {
+	mut arr := []map[string]string{}
+	for r in 0 .. d.num_rows {
+		mut row := map[string]string
+		for idx, key in d.columns.keys() {
+			row[key] = duckdb_value_string(d.result, u64(idx), r)
+		}
+		arr << row
+	}
+	return arr
+}
+
 // Opens and connects to a database. Returns error if file is not found. To use in memory use ':memory:' as filename
 pub fn (mut d DuckDB) open(filename string) !State {
 	mut res := duckdb_open(filename.str, d.db)
+	if res == State.duckdberror {
+		return error('Could not open "${filename}". Is it locked?')
+	} 
 	res = duckdb_connect(d.db.db, d.conn)
+	if res == State.duckdberror {
+		return error('Could not connect to "${filename}"')
+	}	
 	return res
 }
 
@@ -105,7 +125,7 @@ pub fn (mut d DuckDB) query(q string) !State {
 	res := duckdb_query(d.conn.conn, q.str, d.result)
 	if res == State.duckdberror {
 		msg := duckdb_query_error(d.result)
-		panic(msg)
+		return error(msg)
 	} else {
 		d.num_rows = int(duckdb_row_count(d.result))
 		d.num_columns = int(duckdb_column_count(d.result))

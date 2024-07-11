@@ -1,6 +1,10 @@
-# vduckdb 0.6.2
+# vduckdb 0.6.3
 
 A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS.
+
+**Important upcoming API change for next version 0.6.4**:
+
+Functions such as `open`, `connect`, and `query` functions will no longer return a `State` because they already return `Result` which renders a `State` value useless
 
 ## Requirements
 
@@ -18,32 +22,40 @@ v install rodabt.vduckdb
 import rodabt.vduckdb
 
 fn main() {
-  
-  mut db := vduckdb.DuckDB{}
-  println('vduckdb version: ${vduckdb.version()}\n')
-  println('duckdb version: ${vduckdb.duckdb_library_version()}\n')
-  file := ':memory:'
-  mut result_state := db.open(file)!
+    
+    mut db := vduckdb.DuckDB{}
+    println('vduckdb version: ${vduckdb.version()}')
+    println('duckdb version: ${vduckdb.duckdb_library_version()}')
 
-  if result_state == vduckdb.State.duckdberror {
-    println('Error opening DB ${file}')
-  }
+    file := ':memory:'
+    _ := db.open(file)!  // Note: output will change on next version
 
-  q := "select * from 'people-100.csv'"
-  println('Query:\n${q}\n')
+    mut q := 'select "Index", "First Name", "Last Name", "Email", "Date of birth" from \'people-100.csv\' limit 10'
+    println('\nQuery: ${q}')
 
-  result_state = db.query(q)!
+    _ = db.query(q)!    // Note: ouput will change on next version
 
-  if result_state == vduckdb.State.duckdberror {
-    println('Error executing query: ${q}')
-  }
+    println('\nColumns and types: ${db.columns}')
+    
+    println('\n Results as table to terminal:')
+    println(db.print_table(max_rows: 10, mode: 'box'))
 
-  println('Columns ${db.columns}')
-  println(db.print_table(max_rows: 10, mode: 'box'))
+    q = 'select "First Name", "Sex" from \'people-100.csv\' limit 5'
+    println('\nData from \'${q}\' as []map[string]string:')
+    _ = db.query(q)!
+    out := db.get_array_as_string()
+    println(out)
 
-  defer {
-    db.close()
-  }
+    println('\nManaging errors...')
+    q = "select sdkf fff f"
+    db.query(q) or {
+      eprintln(err.msg())
+    }
+
+    defer {
+      db.close()
+    }
+
 }
 ```
 

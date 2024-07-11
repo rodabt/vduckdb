@@ -1,6 +1,16 @@
 # Changelog
 
-## version 0.6.1: 2024-01-23
+## version 0.6.2: 2024-07-11
+
+- More tests
+- Changed panics to error for better control
+- Changed example
+
+## version 0.6.2: 2024-05-23
+
+- Updated shell updating scripts
+
+## version 0.6.1: 2024-04-29
 
 - Added function to gey duckdb library version
 - Padded table output according to data type
