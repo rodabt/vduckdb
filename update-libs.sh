@@ -6,6 +6,7 @@ LIB_MAC="https://github.com/duckdb/duckdb/releases/download/${LATEST_TAG}/libduc
 LIB_WINDOWS="https://github.com/duckdb/duckdb/releases/download/${LATEST_TAG}/libduckdb-windows-amd64.zip"
 
 echo "Updating..."
+mkdir -p ./src/thirdparty
 rm ./src/thirdparty/*
 wget $LIB_LINUX -P ./src/thirdparty/
 wget $LIB_MAC -P ./src/thirdparty/

@@ -1,12 +1,13 @@
 # vduckdb 0.6.4
 
-A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS.
+A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x 
 
-## Requirements
+## DuckDB Libraries installation
 
-A working V version (0.4.x or higher)
+- Download latest DuckDB libraries (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases` to `./thirdparty` in your current directory, or to a directory of your choice if you will use `LIBDUCKDB_DIR` env variable (see Usage)
+- Make sure libraries are named `libduck*` (i.e. `libduckdb.so, libduckdb.dll, libduckdb.dylib`). Check the `update-libs.sh` script as a guideline.
 
-## Installation
+## vduckdb installation
 
 ```bash
 v install https://github.com/rodabt/vduckdb
