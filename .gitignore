@@ -2,6 +2,6 @@
 .vscode/
 .old/
 tmp/
+src/thirdparty/*
 docs/*
 *.db*
-src/thirdparty/
