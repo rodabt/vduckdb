@@ -25,5 +25,7 @@ fn test__out_data() {
 	q := "SELECT 'abc' AS total"
 	res = db.query(q)!
 	data := db.get_array()
-	assert data == [{'total': json2.Any('abc')}] 
+	assert data == [{
+		'total': json2.Any('abc')
+	}]
 }

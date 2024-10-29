@@ -1,10 +1,6 @@
-# vduckdb 0.6.3
+# vduckdb 0.6.4
 
 A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS.
-
-**Important upcoming API change for next version 0.6.4**:
-
-Functions such as `open`, `connect`, and `query` functions will no longer return a `State` because they already return `Result` which renders a `State` value useless
 
 ## Requirements
 
@@ -13,13 +9,14 @@ A working V version (0.4.x or higher)
 ## Installation
 
 ```bash
-v install rodabt.vduckdb
+v install https://github.com/rodabt/vduckdb
 ```
 
 ## Main usage
 
 ```v
-import rodabt.vduckdb
+// file.v
+import vduckdb
 
 fn main() {
     
@@ -27,13 +24,12 @@ fn main() {
     println('vduckdb version: ${vduckdb.version()}')
     println('duckdb version: ${vduckdb.duckdb_library_version()}')
 
-    file := ':memory:'
-    _ := db.open(file)!  // Note: output will change on next version
+    _ := db.open(':memory:')!
 
     mut q := 'select "Index", "First Name", "Last Name", "Email", "Date of birth" from \'people-100.csv\' limit 10'
     println('\nQuery: ${q}')
 
-    _ = db.query(q)!    // Note: ouput will change on next version
+    _ := db.query(q)!
 
     println('\nColumns and types: ${db.columns}')
     
@@ -42,9 +38,12 @@ fn main() {
 
     q = 'select "First Name", "Sex" from \'people-100.csv\' limit 5'
     println('\nData from \'${q}\' as []map[string]string:')
-    _ = db.query(q)!
+    _ := db.query(q)!
     out := db.get_array_as_string()
     println(out)
+
+    first_row := db.get_first_row()
+    println(first_row)
 
     println('\nManaging errors...')
     q = "select sdkf fff f"
@@ -57,6 +56,14 @@ fn main() {
     }
 
 }
+```
+
+```bash
+# If you have `thirdparty` directory and its contents in the same directory as `file.v`
+v run file.v
+
+# Otherwise
+LIBDUCKDB_DIR=/my/custom/libduckdb/directory v run file.v
 ```
 
 ## Documentation

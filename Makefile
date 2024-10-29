@@ -1,4 +1,4 @@
-.PHONY: docs fmt test local
+.PHONY: local docs fmt test
 
 local:
 	ln -s ~/devel/vduckdb ~/.vmodules/vduckdb
@@ -10,4 +10,4 @@ fmt:
 	v fmt -w src/
 
 test:
-	v -stats test src/*_test.v
+	cd src && v -stats test . && cd .. 

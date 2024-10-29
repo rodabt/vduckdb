@@ -1,6 +1,10 @@
 # Changelog
 
-## version 0.6.2: 2024-07-11
+## version 0.6.3-pre4: 2024-07-12
+
+- Preparing changes for 0.6.4
+
+## version 0.6.3: 2024-07-11
 
 - More tests
 - Changed panics to error for better control

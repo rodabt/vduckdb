@@ -18,7 +18,7 @@ pub mut:
 @[params]
 pub struct OutputConfig {
 pub mut:
-	max_rows  int    = 100 // -1 = all rows
+	max_rows  int    = 100   // -1 = all rows
 	mode      string = 'box' // Other modes: 'box', 'ascii'
 	with_type bool
 }
@@ -94,7 +94,7 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 pub fn (d DuckDB) get_array_as_string() []map[string]string {
 	mut arr := []map[string]string{}
 	for r in 0 .. d.num_rows {
-		mut row := map[string]string
+		mut row := map[string]string{}
 		for idx, key in d.columns.keys() {
 			row[key] = duckdb_value_string(d.result, u64(idx), r)
 		}
@@ -103,16 +103,24 @@ pub fn (d DuckDB) get_array_as_string() []map[string]string {
 	return arr
 }
 
+pub fn (d DuckDB) get_first_row() map[string]string {
+	arr := d.get_array_as_string()
+	if arr.len == 0 {
+		return map[string]string{}
+	}
+	return arr[0]
+}
+
 // Opens and connects to a database. Returns error if file is not found. To use in memory use ':memory:' as filename
 pub fn (mut d DuckDB) open(filename string) !State {
 	mut res := duckdb_open(filename.str, d.db)
 	if res == State.duckdberror {
 		return error('Could not open "${filename}". Is it locked?')
-	} 
+	}
 	res = duckdb_connect(d.db.db, d.conn)
 	if res == State.duckdberror {
 		return error('Could not connect to "${filename}"')
-	}	
+	}
 	return res
 }
 

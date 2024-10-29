@@ -13,7 +13,7 @@ pub:
 }
 
 enum Type {
-	duckdb_type_invalid      = 0
+	duckdb_type_invalid = 0
 	duckdb_type_boolean
 	duckdb_type_tinyint
 	duckdb_type_smallint
