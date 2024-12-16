@@ -1,5 +1,13 @@
 # Changelog
 
+## version 0.6.5
+
+- Fixed HugeInt
+
+## version 0.6.4
+
+- Minor code refactoring
+
 ## version 0.6.3-pre4: 2024-07-12
 
 - Preparing changes for 0.6.4

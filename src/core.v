@@ -63,13 +63,16 @@ pub fn (d DuckDB) get_array() []map[string]json2.Any {
 					row[key] = json2.Any(duckdb_value_int16(d.result, u64(idx), r))
 				}
 				'hugeint' {
-					row[key] = json2.Any(json2.encode(duckdb_value_hugeint(d.result, u64(idx),
-						r)))
+					row[key] = json2.Any(duckdb_hugeint_to_double(duckdb_value_hugeint(d.result,
+						u64(idx), r)))
 				}
 				'float' {
 					row[key] = json2.Any(duckdb_value_float(d.result, u64(idx), r))
 				}
 				'double' {
+					row[key] = json2.Any(duckdb_value_double(d.result, u64(idx), r))
+				}
+				'decimal' {
 					row[key] = json2.Any(duckdb_value_double(d.result, u64(idx), r))
 				}
 				'timestamp' {

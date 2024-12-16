@@ -143,6 +143,8 @@ type FNValueHugeInt = fn (&Result, u64, u64) HugeInt
 
 type FNValueDecimal = fn (&Result, u64, u64) Decimal
 
+type FNValueHugeIntToDouble = fn (HugeInt) f64
+
 type FNValueDate = fn (&Result, u64, u64) Date
 
 type FNValueTime = fn (&Result, u64, u64) Time
@@ -189,6 +191,9 @@ const duckdb_value_varchar = FNValueVarchar(dl.sym_opt(handle, 'duckdb_value_var
 })
 const duckdb_value_str = FNValueString(dl.sym_opt(handle, 'duckdb_value_string') or { panic(err) })
 const duckdb_value_hugeint = FNValueHugeInt(dl.sym_opt(handle, 'duckdb_value_hugeint') or {
+	panic(err)
+})
+const duckdb_hugeint_to_double = FNValueHugeIntToDouble(dl.sym_opt(handle, 'duckdb_hugeint_to_double') or {
 	panic(err)
 })
 const duckdb_value_decimal = FNValueDecimal(dl.sym_opt(handle, 'duckdb_value_decimal') or {
