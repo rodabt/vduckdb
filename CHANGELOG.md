@@ -1,5 +1,9 @@
 # Changelog
 
+## version 0.6.6
+
+- Eliminated fatal error compilation when libduckdb library is not present 
+
 ## version 0.6.5
 
 - Fixed HugeInt

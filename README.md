@@ -1,11 +1,12 @@
 # vduckdb 0.6.5
 
-A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x 
+A V wrapper for duckvdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
 
-## DuckDB Libraries installation
+## DuckDB library installation
 
-- Download latest DuckDB libraries (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases` to `./thirdparty` in your current directory, or to a directory of your choice if you will use `LIBDUCKDB_DIR` env variable (see Usage)
-- Make sure libraries are named `libduck*` (i.e. `libduckdb.so, libduckdb.dll, libduckdb.dylib`). Check the `update-libs.sh` script as a guideline.
+- Download the latest DuckDB (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases` and unzip the archive
+- Pick the `.so` (Linux), `.dll` (Windows), or `.dylib` (OS X) file and rename it to `libduckvdb.so`, `libduckvdb.dll`, or `libduckvdb.dylib` accordingly
+- Copy or move the file to the root directory where your V code is, or to a subdirectory called `thirdparty` or set a global variable called `LIBDUDCKDB_DIR`
 
 ## vduckdb installation
 
@@ -16,55 +17,49 @@ v install https://github.com/rodabt/vduckdb
 ## Main usage
 
 ```v
-// file.v
+// example.v
 import vduckdb
 
 fn main() {
-    
-    mut db := vduckdb.DuckDB{}
+
+    mut vdb := vduckdb.DuckDB{}
     println('vduckdb version: ${vduckdb.version()}')
     println('duckdb version: ${vduckdb.duckdb_library_version()}')
 
-    _ := db.open(':memory:')!
+    _ := vdb.open(':memory:')!
 
-    mut q := 'select "Index", "First Name", "Last Name", "Email", "Date of birth" from \'people-100.csv\' limit 10'
+        db_file := 'https://gist.githubusercontent.com/Sharanya1307/631c9f66e5709dbace46b5ed6672381e/raw/4329c1980eac3a71b881b18757a5bfabd2a95a1e/people-100.csv'
+
+    mut q := "select * from '${db_file}' limit 10"
     println('\nQuery: ${q}')
 
-    _ := db.query(q)!
+    _ := vdb.query(q)!
 
-    println('\nColumns and types: ${db.columns}')
-    
+    println('\nColumns and types: ${vdb.columns}')
+
     println('\n Results as table to terminal:')
-    println(db.print_table(max_rows: 10, mode: 'box'))
+    println(vdb.print_table(max_rows: 10, mode: 'box'))
 
-    q = 'select "First Name", "Sex" from \'people-100.csv\' limit 5'
+    q = "select \"First Name\", \"Sex\" from '${db_file}' limit 5"
     println('\nData from \'${q}\' as []map[string]string:')
-    _ := db.query(q)!
-    out := db.get_array_as_string()
+    _ := vdb.query(q)!
+    out := vdb.get_array_as_string()
     println(out)
 
-    first_row := db.get_first_row()
+    first_row := vdb.get_first_row()
     println(first_row)
 
     println('\nManaging errors...')
-    q = "select sdkf fff f"
-    db.query(q) or {
+    q = "invalid query..."
+    vdb.query(q) or {
       eprintln(err.msg())
     }
-
-    defer {
-      db.close()
-    }
-
+    vdb.close()
 }
 ```
 
 ```bash
-# If you have `thirdparty` directory and its contents in the same directory as `file.v`
-v run file.v
-
-# Otherwise
-LIBDUCKDB_DIR=/my/custom/libduckdb/directory v run file.v
+$ v run file.v
 ```
 
 ## Documentation
@@ -77,7 +72,7 @@ Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `doc
 - [x] Added tests
 - [x] Write base documentation
 - [x] Download and install required dependencies
-- [x] Map all relevant definitions from `duckdb.h` header file to their V counterparts
+- [x] Map all relevant definitions from `duckvdb.h` header file to their V counterparts
 - [x] Create convenience functions and data wrappers
 - [ ] Add website and tutorials
 - [ ] Build integration with V ORM
