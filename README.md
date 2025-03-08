@@ -59,7 +59,7 @@ fn main() {
 ```
 
 ```bash
-$ v run file.v
+$ v run example.v
 ```
 
 ## Documentation
