@@ -4,6 +4,6 @@ Module {
 	author: 'Rodrigo Abt <rodrigo.abt@gmail.com>'
     license: 'MIT'
     repo_url: 'https://github.com/rodabt/vduckdb'
-    version: '0.6.6'
+    version: '0.6.7'
     dependencies: []
 }
