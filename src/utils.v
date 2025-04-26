@@ -1,7 +1,5 @@
 module vduckdb
 
-import x.json2
-
 const table_type = {
 	'ascii': {
 		// Top chars
@@ -38,7 +36,7 @@ const table_type = {
 }
 
 // TODO: Print in streaming fashion....
-fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
+fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 	chars := table_type[o.mode].clone()
 
 	mut table := []string{}
@@ -50,7 +48,7 @@ fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
 	for key in keys {
 		mut max_width := key.len
 		for row in data {
-			value := (row[key] or { json2.Any('') }).str()
+			value := row[key]
 			if value.len > max_width {
 				max_width = value.len
 			}
@@ -93,12 +91,8 @@ fn gen_table(o OutputConfig, data []map[string]json2.Any, limit int) string {
 	for row in data[0..limit] {
 		mut line := ''
 		for i, key in keys {
-			value := (row[key] or { json2.Any('') }).str()
-			if (row[key] or { json2.Any('') }) is string {
-				line += chars['sep'] + ' ' + value + ' '.repeat(col_widths[i] - value.len) + ' '
-			} else {
-				line += chars['sep'] + ' ' + ' '.repeat(col_widths[i] - value.len) + value + ' '
-			}
+			value := row[key]
+			line += chars['sep'] + ' ' + value + ' '.repeat(col_widths[i] - value.len) + ' '
 		}
 		line += chars['sep']
 		table << line

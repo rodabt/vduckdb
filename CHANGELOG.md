@@ -1,5 +1,9 @@
 # Changelog
 
+## version 0.6.7
+
+- Fixed strange rare error when using print_table, and a type on README
+
 ## version 0.6.6
 
 - Eliminated fatal error compilation when libduckdb library is not present 

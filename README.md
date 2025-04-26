@@ -1,4 +1,4 @@
-# vduckdb 0.6.6
+# vduckdb 0.6.7
 
 A V wrapper for duckvdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
 
@@ -6,7 +6,7 @@ A V wrapper for duckvdb. This library is now in beta and should be safe to use i
 
 - Download the latest DuckDB (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases` and unzip the archive
 - Pick the `.so` (Linux), `.dll` (Windows), or `.dylib` (OS X) file and rename it to `libduckvdb.so`, `libduckvdb.dll`, or `libduckvdb.dylib` accordingly
-- Copy or move the file to the root directory where your V code is, or to a subdirectory called `thirdparty` or set a global variable called `LIBDUDCKDB_DIR`
+- Copy or move the file to the root directory where your V code is, or to a subdirectory called `thirdparty` or set a global variable called `LIBDUCKDB_DIR`
 
 ## vduckdb installation
 

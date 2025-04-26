@@ -29,3 +29,21 @@ fn test__out_data() {
 		'total': json2.Any('abc')
 	}]
 }
+
+fn test__out_data_string() {
+	mut vdb := DuckDB{}
+	_ := vdb.open(':memory:')!
+	_ := vdb.query("select 1 as a")!
+	res := vdb.get_array_as_string()
+	assert res == [{
+		'a': '1'
+	}]
+}
+
+fn test__out_data_table() {
+	mut vdb := DuckDB{}
+	_ := vdb.open(':memory:')!
+	_ := vdb.query("select 1 as a")!
+	res := vdb.print_table()
+	assert res.starts_with('┌───┐')
+}
