@@ -33,6 +33,22 @@ const table_type = {
 		'br':   '┘'
 		'bs':   '┴'
 	}
+	'md':   {
+		// Top chars
+		'tl':   '|'
+		'line': '-'
+		'ts':   '|'
+		'tr':   '|'
+		// Middle chars
+		'ms':   '|'
+		'mls':  '|'
+		'mrs':  '|'
+		'sep':  '|'
+		// Bottom chars
+		'bl':   '|'
+		'br':   '|'
+		'bs':   ' '
+	}
 }
 
 // TODO: Print in streaming fashion....
@@ -79,7 +95,9 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 
 	mut headers := ''
 
-	table << top
+	if o.mode in ['box','ascii'] {
+		table << top
+	}
 	for i, key in keys {
 		headers += chars['sep'] + ' ' + key + ' '.repeat(col_widths[i] - key.len) + ' '
 	}
@@ -97,7 +115,9 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 		line += chars['sep']
 		table << line
 	}
-	table << bottom
-	table << 'Total rows: ${limit}'
+	if o.mode in ['box','ascii'] {
+		table << bottom
+	}
+	table << '\nTotal rows: ${limit}'
 	return table.join('\n')
 }

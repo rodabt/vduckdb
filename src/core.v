@@ -19,7 +19,7 @@ pub mut:
 pub struct OutputConfig {
 pub mut:
 	max_rows  int    = 100   // -1 = all rows
-	mode      string = 'box' // Other modes: 'box', 'ascii'
+	mode      string = 'box' // Other modes: 'box', 'ascii', 'md'
 	with_type bool
 }
 

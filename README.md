@@ -38,7 +38,7 @@ fn main() {
     println('\nColumns and types: ${vdb.columns}')
 
     println('\n Results as table to terminal:')
-    println(vdb.print_table(max_rows: 10, mode: 'box'))
+    println(vdb.print_table(max_rows: 10, mode: 'box'))  // other options are: ascii and md
 
     q = "select \"First Name\", \"Sex\" from '${db_file}' limit 5"
     println('\nData from \'${q}\' as []map[string]string:')

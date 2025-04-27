@@ -1,5 +1,9 @@
 # Changelog
 
+## version 0.6.8
+
+- Added markdown output for print_table
+
 ## version 0.6.7
 
 - Fixed strange rare error when using print_table, and a type on README
