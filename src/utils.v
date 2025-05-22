@@ -49,10 +49,14 @@ const table_type = {
 		'br':   '|'
 		'bs':   ' '
 	}
+	'html': {}
 }
 
 // TODO: Print in streaming fashion....
 fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
+	if o.mode == 'html' {
+		return gen_html(data, limit)
+	}
 	chars := table_type[o.mode].clone()
 
 	mut table := []string{}
@@ -120,4 +124,26 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 	}
 	table << '\nTotal rows: ${limit}'
 	return table.join('\n')
+}
+
+
+fn gen_html(data []map[string]string, limit int) string {
+	header := if data.len > 0 { '<tr>' + data[0].keys().map('<th>' + it + '</th>').join_lines() + '</tr>' } else { '' }
+	mut rows := []string{}
+	if data.len > 0 {
+		for row in data[0..limit] {
+			rows << '<tr>' + row.values().map('<td>' + it + '</td>').join_lines() + '</tr>'
+		}
+	}
+	table := if data.len > 0 {'
+	<table>
+		<thead>
+		${header}
+		</thead>
+		<tbody>
+		${rows.join_lines()}
+		</tbody>
+	</table>
+	'} else { '' }
+	return table
 }

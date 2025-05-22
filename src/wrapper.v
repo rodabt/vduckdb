@@ -217,7 +217,7 @@ const duckdb_lib_version = FNVersion(dl.sym_opt(handle, 'duckdb_library_version'
 pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 	ret := unsafe { duckdb_value_varchar(result, col, row) }
 	if ret == unsafe { nil } {
-		return ''
+		return 'NULL'
 	}
 	s := unsafe { (*ret).vstring().clone() }
 	duckdb_free(ret)

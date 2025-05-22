@@ -106,6 +106,27 @@ pub fn (d DuckDB) get_array_as_string() []map[string]string {
 	return arr
 }
 
+@[params]
+pub struct LimitOptions {
+pub mut:
+	n		int = 100
+}
+
+// Version that returns results as []map[string]string (with limit)
+@[direct_array_access]
+pub fn (d DuckDB) get_array_as_string_with_limit(lo LimitOptions) []map[string]string {
+	mut arr := []map[string]string{}
+	num_rows := if lo.n > 0 { math.min(lo.n,d.num_rows) } else { d.num_rows }
+	for r in 0 .. num_rows {
+		mut row := map[string]string{}
+		for idx, key in d.columns.keys() {
+			row[key] = duckdb_value_string(d.result, u64(idx), r)
+		}
+		arr << row
+	}
+	return arr
+}
+
 pub fn (d DuckDB) get_first_row() map[string]string {
 	arr := d.get_array_as_string()
 	if arr.len == 0 {
