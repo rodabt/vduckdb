@@ -1,4 +1,4 @@
-# vduckdb 0.6.8
+# vduckdb 0.6.9
 
 A V wrapper for duckvdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
 

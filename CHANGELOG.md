@@ -1,5 +1,11 @@
 # Changelog
 
+## version 0.6.9
+
+- Added `mode: html` option to output of `print_table`
+- Added new function `get_array_as_string_with_limit(n: int value)`. Default is 100.
+- Added explicit `NULL` literal string to NULL outputs when using `get_array_as_string` or `get_array_as_string_with_limit`  
+
 ## version 0.6.8
 
 - Added markdown output for print_table
