@@ -12,6 +12,11 @@ pub:
 	conn voidptr
 }
 
+struct Config {
+pub mut:
+	config voidptr
+}
+
 enum Type {
 	duckdb_type_invalid = 0
 	duckdb_type_boolean
@@ -107,6 +112,8 @@ pub:
 
 type FNOpen = fn (&char, &Database) State
 
+type FNOpenExt = fn (&char, &Database, Config, char) State
+
 type FNConnect = fn (&Database, &Connection) State
 
 type FNDisconnect = fn (&Connection)
@@ -163,6 +170,7 @@ type FNVersion = fn () &char
 
 const handle = dl.open_opt(library_file_path, dl.rtld_lazy) or { panic(err) }
 const duckdb_open = FNOpen(dl.sym_opt(handle, 'duckdb_open') or { panic(err) })
+const duckdb_open_ext = FNOpenExt(dl.sym_opt(handle, 'duckdb_open_ext') or { panic(err) })
 const duckdb_connect = FNConnect(dl.sym_opt(handle, 'duckdb_connect') or { panic(err) })
 const duckdb_disconnect = FNDisconnect(dl.sym_opt(handle, 'duckdb_disconnect') or { panic(err) })
 const duckdb_close = FNClose(dl.sym_opt(handle, 'duckdb_close') or { panic(err) })

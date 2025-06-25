@@ -13,6 +13,7 @@ pub mut:
 	num_columns int
 	columns     map[string]string
 	last_query  string
+	file		string
 }
 
 @[params]
@@ -145,15 +146,16 @@ pub fn (mut d DuckDB) open(filename string) !State {
 	if res == State.duckdberror {
 		return error('Could not connect to "${filename}"')
 	}
+	d.file = filename
 	return res
 }
 
 // Runs a query
 pub fn (mut d DuckDB) query(q string) !State {
-	if d.last_query.len > 0 {
+	/* if d.last_query.len > 0 {
 		duckdb_destroy_result(d.result)
 		d.result = &Result{}
-	}
+	} */
 	res := duckdb_query(d.conn.conn, q.str, d.result)
 	if res == State.duckdberror {
 		msg := duckdb_query_error(d.result)
@@ -165,6 +167,7 @@ pub fn (mut d DuckDB) query(q string) !State {
 		d.last_query = q
 		return res
 	}
+	duckdb_destroy_result(d.result)
 	return State.duckdberror
 }
 
@@ -187,7 +190,7 @@ pub fn (d DuckDB) print_table(o OutputConfig) string {
 
 // Closes the connection, database, and destroys results
 pub fn (mut d DuckDB) close() {
-	duckdb_destroy_result(d.result)
+	// duckdb_destroy_result(d.result)
 	duckdb_disconnect(d.conn)
 	duckdb_close(d.db)
 }
