@@ -54,9 +54,9 @@ const table_type = {
 
 // TODO: Print in streaming fashion....
 fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
-	if o.mode == 'html' {
+	/* if o.mode == 'html' {
 		return gen_html(data, limit)
-	}
+	} */
 	chars := table_type[o.mode].clone()
 
 	mut table := []string{}
@@ -126,7 +126,7 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 	return table.join('\n')
 }
 
-
+@[deprecated: 'use get_data_as_table()']
 fn gen_html(data []map[string]string, limit int) string {
 	header := if data.len > 0 { '<tr>' + data[0].keys().map('<th>' + it + '</th>').join_lines() + '</tr>' } else { '' }
 	mut rows := []string{}

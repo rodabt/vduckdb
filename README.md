@@ -1,4 +1,4 @@
-# vduckdb 0.6.9
+# vduckdb 0.6.9-b
 
 A V wrapper for duckvdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
 
@@ -36,6 +36,7 @@ fn main() {
     _ := vdb.query(q)!
 
     println('\nColumns and types: ${vdb.columns}')
+    println('\nExecution time: ${vdb.time_ms}')
 
     println('\n Results as table to terminal:')
     println(vdb.print_table(max_rows: 10, mode: 'box'))  // other options are: ascii and md

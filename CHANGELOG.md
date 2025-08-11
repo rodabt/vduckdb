@@ -1,5 +1,12 @@
 # Changelog
 
+## version 0.6.9-b
+
+- Added execution time variable db.time_ms (string)
+- Breaking changes: 
+    - Added function get_data_as_table() that replaces gen_html() that now is marked as deprecated
+    - gen_table() no longer generates html either
+
 ## version 0.6.9
 
 - Added `mode: html` option to output of `print_table`

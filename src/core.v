@@ -3,6 +3,7 @@ module vduckdb
 import v.vmod
 import x.json2
 import math
+import time
 
 pub struct DuckDB {
 pub mut:
@@ -14,6 +15,7 @@ pub mut:
 	columns     map[string]string
 	last_query  string
 	file		string
+	time_ms		string
 }
 
 @[params]
@@ -107,6 +109,23 @@ pub fn (d DuckDB) get_array_as_string() []map[string]string {
 	return arr
 }
 
+// Version that returns results as HTML table
+@[direct_array_access]
+pub fn (d DuckDB) get_data_as_table() string {
+	headers := '<tr>' + d.columns.keys().map('<th>' + it + '</th>').join_lines() + '</tr>'
+	mut rows := []string{}
+	for r in 0 .. d.num_rows {
+		mut cells := []string{}
+		for idx, _ in d.columns.keys() {
+			cells << '<td>' + duckdb_value_string(d.result, u64(idx), r) + '</td>'
+		}
+		rows << '<tr>' + cells.join_lines() + '</tr>'
+	}
+	body := rows.join_lines()
+	table := '<table><thead>${headers}</thead><tbody>${body}</tbody></table>'
+	return table
+}
+
 @[params]
 pub struct LimitOptions {
 pub mut:
@@ -156,7 +175,9 @@ pub fn (mut d DuckDB) query(q string) !State {
 		duckdb_destroy_result(d.result)
 		d.result = &Result{}
 	} */
+	start_time := time.now()
 	res := duckdb_query(d.conn.conn, q.str, d.result)
+	end_time := time.now()
 	if res == State.duckdberror {
 		msg := duckdb_query_error(d.result)
 		return error(msg)
@@ -165,6 +186,7 @@ pub fn (mut d DuckDB) query(q string) !State {
 		d.num_columns = int(duckdb_column_count(d.result))
 		d.columns = build_columns_map(d)
 		d.last_query = q
+		d.time_ms = (end_time - start_time).str()
 		return res
 	}
 	duckdb_destroy_result(d.result)
