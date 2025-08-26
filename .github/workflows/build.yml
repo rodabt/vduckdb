@@ -1,0 +1,46 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install V
+        uses: vlang/setup-v@v1
+        with:
+          check-latest: true
+
+      - name: Show V version
+        run: v version
+
+      - name: Check code formatting
+        run: |
+          v fmt -diff src/
+          v fmt -verify src/
+
+      - name: Install DuckDB library
+        run: |
+          chmod +x scripts/install-duckdb.sh
+          ./scripts/install-duckdb.sh
+
+      - name: Run Tests
+        run: |
+          cd src
+          v test .
+
+      - name: Verify library import
+        run: |
+          cd src
+          v -cflags="-I../thirdparty" -run -e "import vduckdb; println('✓ Library imports successfully')"
