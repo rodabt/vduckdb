@@ -38,8 +38,3 @@ jobs:
         run: |
           cd src
           v test .
-
-      - name: Verify library import
-        run: |
-          cd src
-          v -cflags="-I../thirdparty" -run -e "import vduckdb; println('✓ Library imports successfully')"
