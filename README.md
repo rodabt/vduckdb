@@ -17,8 +17,11 @@ The DuckDB library is automatically downloaded and managed for you! The project 
 ### Quick Setup
 
 ```bash
-# Install/update the DuckDB library for your platform
+# Install/update the DuckDB library for your platform (dynamic linking)
 make install-libs
+
+# Install for static linking (Linux only)
+make install-libs-static
 
 # Or run the full setup (install libs + run tests)
 make setup
@@ -102,8 +105,11 @@ Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `doc
 ## Development Commands
 
 ```bash
-# Install/update DuckDB library for current platform
+# Install/update DuckDB library for current platform (dynamic linking)
 make install-libs
+
+# Install DuckDB library for static linking (Linux only)
+make install-libs-static
 
 # Clean downloaded libraries
 make clean-libs
@@ -142,6 +148,26 @@ The project includes a V-native installer that works on all platforms:
 
 - `src/install_duckdb.v` - Cross-platform DuckDB library installer written in V
 - No external dependencies - everything runs natively in V
+
+### Static Linking (Linux Only)
+
+For Linux users who want better performance and no runtime library dependencies:
+
+```bash
+# Install static library
+make install-libs-static
+
+# Compile with static linking
+v -cflags "-static" your_program.v
+```
+
+**Benefits of static linking:**
+- ⚡ **Better performance** - No dynamic library loading overhead
+- 📦 **Self-contained** - No external library dependencies at runtime
+- 🚀 **Faster startup** - No library resolution delays
+- 🔒 **More secure** - No library injection vulnerabilities
+
+**Note:** Static linking is only available on Linux platforms where DuckDB provides `libduckdb_static.a`.
 
 ### Library Management
 

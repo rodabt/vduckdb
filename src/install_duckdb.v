@@ -22,9 +22,23 @@ fn main() {
 	println('🦆 DuckDB Library Installer for vduckdb')
 	println('========================================')
 
+	// Parse command line arguments
+	args := os.args
+	mut static_linking := args.len > 1 && args[1] == '--static'
+
+	if static_linking {
+		println('🔗 Static linking mode enabled')
+	}
+
 	// Detect platform
 	platform := detect_platform()
 	println('📱 Detected platform: ${platform}')
+
+	// Check if static linking is supported for this platform
+	if static_linking && !is_static_linking_supported(platform) {
+		println('⚠️  Static linking not supported on ${platform}, falling back to dynamic linking')
+		static_linking = false
+	}
 
 	// Get latest version
 	version := get_latest_version() or {
@@ -34,12 +48,21 @@ fn main() {
 	println('📦 Latest DuckDB version: ${version}')
 
 	// Install library
-	install_library(platform, version) or {
+	install_library(platform, version, static_linking) or {
 		println('❌ Failed to install library: ${err}')
 		return
 	}
 
 	println('✅ DuckDB library installation completed successfully!')
+	if static_linking {
+		println('🔗 Library installed for static linking')
+		println('💡 To use static linking, compile with: v -cflags "-static" your_program.v')
+	} else {
+		println('🔗 Library installed for dynamic linking')
+		if platform.starts_with('linux-') {
+			println('💡 For static linking on Linux, run: make install-libs-static')
+		}
+	}
 	println('🧪 You can now run: make test')
 }
 
@@ -72,6 +95,11 @@ fn detect_platform() string {
 			return 'linux-amd64' // fallback
 		}
 	}
+}
+
+fn is_static_linking_supported(platform string) bool {
+	// Only Linux platforms support static linking currently
+	return platform.starts_with('linux-')
 }
 
 fn get_latest_version() !string {
@@ -113,7 +141,7 @@ fn get_latest_version_from_github() !string {
 	return release.tag_name
 }
 
-fn install_library(platform string, version string) ! {
+fn install_library(platform string, version string, static_linking bool) ! {
 	println('📥 Installing DuckDB library for ${platform}...')
 
 	// Create directories
@@ -135,7 +163,7 @@ fn install_library(platform string, version string) ! {
 	download_file(download_url, zip_path) or { return error('Failed to download library: ${err}') }
 
 	// Extract the library
-	extract_library(zip_path, platform, lib_filename, lib_ext) or {
+	extract_library(zip_path, platform, lib_filename, lib_ext, static_linking) or {
 		return error('Failed to extract library: ${err}')
 	}
 
@@ -186,43 +214,64 @@ fn download_file(url string, path string) ! {
 	println('✅ Download completed (${file_info.size} bytes)')
 }
 
-fn extract_library(zip_path string, platform string, lib_filename string, lib_ext string) ! {
+fn extract_library(zip_path string, platform string, lib_filename string, lib_ext string, static_linking bool) ! {
 	println('📂 Extracting library files...')
 
-	// For now, we'll use system unzip command
-	// In a more sophisticated version, we could implement zip extraction in pure V
-	unzip_cmd := 'unzip -j -o "${zip_path}" -d "./thirdparty/" "${lib_filename}" duckdb.h'
-
-	result := os.execute(unzip_cmd)
-	if result.exit_code != 0 {
-		return error('Failed to extract library: ${result.output}')
-	}
-
-	// Determine target filename
-	target_filename := 'libduckdb${lib_ext}'
-
-	// Windows needs special handling - rename duckdb.dll to libduckdb.dll
-	if platform == 'windows-amd64' && os.exists('./thirdparty/duckdb.dll') {
-		os.mv('./thirdparty/duckdb.dll', './thirdparty/${target_filename}') or {
-			return error('Failed to rename Windows library: ${err}')
+	// Extract files based on linking mode
+	if static_linking && platform.starts_with('linux-') {
+		// Extract static library and header for Linux
+		unzip_cmd := 'unzip -j -o "${zip_path}" -d "./thirdparty/" "libduckdb_static.a" duckdb.h'
+		result := os.execute(unzip_cmd)
+		if result.exit_code != 0 {
+			return error('Failed to extract static library: ${result.output}')
 		}
-	}
 
-	// Copy to src/thirdparty for tests
-	os.cp('./thirdparty/${target_filename}', './src/thirdparty/${target_filename}') or {
-		return error('Failed to copy library to src/thirdparty: ${err}')
-	}
-	os.cp('./thirdparty/duckdb.h', './src/thirdparty/duckdb.h') or {
-		return error('Failed to copy header to src/thirdparty: ${err}')
-	}
-
-	// Create symlink in root directory (Unix-like systems only)
-	if platform != 'windows-amd64' {
-		if !os.exists('./${target_filename}') {
-			os.symlink('./thirdparty/${target_filename}', './${target_filename}') or {
-				println('⚠️  Warning: Could not create symlink (this is normal on Windows)')
+		// Rename static library to standard name
+		if os.exists('./thirdparty/libduckdb_static.a') {
+			os.mv('./thirdparty/libduckdb_static.a', './thirdparty/libduckdb.a') or {
+				return error('Failed to rename static library: ${err}')
 			}
 		}
+
+		println('🔗 Static library extracted: libduckdb.a')
+	} else {
+		// Extract dynamic library and header
+		unzip_cmd := 'unzip -j -o "${zip_path}" -d "./thirdparty/" "${lib_filename}" duckdb.h'
+		result := os.execute(unzip_cmd)
+		if result.exit_code != 0 {
+			return error('Failed to extract library: ${result.output}')
+		}
+
+		// Determine target filename
+		target_filename := 'libduckdb${lib_ext}'
+
+		// Windows needs special handling - rename duckdb.dll to libduckdb.dll
+		if platform == 'windows-amd64' && os.exists('./thirdparty/duckdb.dll') {
+			os.mv('./thirdparty/duckdb.dll', './thirdparty/${target_filename}') or {
+				return error('Failed to rename Windows library: ${err}')
+			}
+		}
+
+		// Copy to src/thirdparty for tests
+		os.cp('./thirdparty/${target_filename}', './src/thirdparty/${target_filename}') or {
+			return error('Failed to copy library to src/thirdparty: ${err}')
+		}
+
+		// Create symlink in root directory (Unix-like systems only)
+		if platform != 'windows-amd64' {
+			if !os.exists('./${target_filename}') {
+				os.symlink('./thirdparty/${target_filename}', './${target_filename}') or {
+					println('⚠️  Warning: Could not create symlink (this is normal on Windows)')
+				}
+			}
+		}
+
+		println('🔗 Dynamic library extracted: ${target_filename}')
+	}
+
+	// Copy header to src/thirdparty for tests
+	os.cp('./thirdparty/duckdb.h', './src/thirdparty/duckdb.h') or {
+		return error('Failed to copy header to src/thirdparty: ${err}')
 	}
 
 	println('✅ Library extracted and installed')
