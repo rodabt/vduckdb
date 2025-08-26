@@ -6,8 +6,9 @@ A V wrapper for duckvdb. This library is now in beta and should be safe to use i
 
 ## DuckDB library installation
 
-The DuckDB library is automatically downloaded and managed for you! The project includes an intelligent installer that:
+The DuckDB library is automatically downloaded and managed for you! The project includes a V-native installer that:
 
+- **Cross-platform**: Works on Linux, macOS, and Windows
 - **Automatically detects** your operating system and architecture
 - **Downloads the latest** compatible DuckDB library
 - **Installs it correctly** for your platform
@@ -137,10 +138,10 @@ Pull requests are welcome
 
 ### Development Setup
 
-The project includes several helpful scripts in the `scripts/` directory:
+The project includes a V-native installer that works on all platforms:
 
-- `install-duckdb.sh` - Automatically downloads and installs the DuckDB library for your platform
-- Additional development tools can be added here
+- `src/install_duckdb.v` - Cross-platform DuckDB library installer written in V
+- No external dependencies - everything runs natively in V
 
 ### Library Management
 

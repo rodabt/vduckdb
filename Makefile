@@ -15,7 +15,7 @@ test:
 # Install/update DuckDB library for current platform
 install-libs:
 	@echo "Installing DuckDB library for current platform..."
-	@./scripts/install-duckdb.sh
+	@v run src/install_duckdb.v
 
 # Clean downloaded libraries (keeps symlinks)
 clean-libs:

@@ -32,8 +32,7 @@ jobs:
 
       - name: Install DuckDB library
         run: |
-          chmod +x scripts/install-duckdb.sh
-          ./scripts/install-duckdb.sh
+          v run src/install_duckdb.v
 
       - name: Run Tests
         run: |
