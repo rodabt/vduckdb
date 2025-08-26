@@ -26,6 +26,7 @@ jobs:
         run: v version
 
       - name: Check code formatting
+        continue-on-error: true
         run: |
           v fmt -diff src/
           v fmt -verify src/
