@@ -1,4 +1,4 @@
-.PHONY: local docs fmt test
+.PHONY: local docs fmt test install-libs clean-libs
 
 local:
 	ln -s ~/devel/vduckdb ~/.vmodules/vduckdb
@@ -10,4 +10,22 @@ fmt:
 	v fmt -w src/
 
 test:
-	cd src && v -stats test . && cd .. 
+	cd src && v -stats test . && cd ..
+
+# Install/update DuckDB library for current platform
+install-libs:
+	@echo "Installing DuckDB library for current platform..."
+	@./scripts/install-duckdb.sh
+
+# Clean downloaded libraries (keeps symlinks)
+clean-libs:
+	@echo "Cleaning downloaded libraries..."
+	@rm -f ./thirdparty/libduckdb.*
+	@rm -f ./src/thirdparty/libduckdb.*
+	@rm -f ./thirdparty/duckdb.h
+	@rm -f ./src/thirdparty/duckdb.h
+	@echo "Libraries cleaned. Run 'make install-libs' to reinstall."
+
+# Setup project (install dependencies and run tests)
+setup: install-libs test
+	@echo "Project setup complete!" 

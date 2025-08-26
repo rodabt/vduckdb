@@ -4,7 +4,28 @@ A V wrapper for duckvdb. This library is now in beta and should be safe to use i
 
 ## DuckDB library installation
 
-- Download the latest DuckDB (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases` and unzip the archive
+The DuckDB library is automatically downloaded and managed for you! The project includes an intelligent installer that:
+
+- **Automatically detects** your operating system and architecture
+- **Downloads the latest** compatible DuckDB library
+- **Installs it correctly** for your platform
+- **Keeps it updated** when new versions are available
+
+### Quick Setup
+
+```bash
+# Install/update the DuckDB library for your platform
+make install-libs
+
+# Or run the full setup (install libs + run tests)
+make setup
+```
+
+### Manual Installation (if needed)
+
+If you prefer manual installation:
+
+- Download the latest DuckDB (`libduckdb*.zip`) for your OS from `https://github.com/duckdb/duckdb/releases`
 - Pick the `.so` (Linux), `.dll` (Windows), or `.dylib` (OS X) file and rename it to `libduckdb.so`, `libduckdb.dll`, or `libduckdb.dylib` accordingly
 - Copy or move the file to the root directory where your V code is, or to a subdirectory called `thirdparty` or set a global variable called `LIBDUCKDB_DIR`
 
@@ -75,6 +96,28 @@ LIBDUCKDB_DIR=/home/user/libdir v run .
 
 Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `docs` folder
 
+## Development Commands
+
+```bash
+# Install/update DuckDB library for current platform
+make install-libs
+
+# Clean downloaded libraries
+make clean-libs
+
+# Run tests
+make test
+
+# Full project setup (install libs + run tests)
+make setup
+
+# Format code
+make fmt
+
+# Generate documentation
+make docs
+```
+
 ## Roadmap
 
 - [x] Define as module
@@ -89,3 +132,18 @@ Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `doc
 ## Contributing
 
 Pull requests are welcome
+
+### Development Setup
+
+The project includes several helpful scripts in the `scripts/` directory:
+
+- `install-duckdb.sh` - Automatically downloads and installs the DuckDB library for your platform
+- Additional development tools can be added here
+
+### Library Management
+
+The DuckDB library is automatically managed and should not be committed to the repository. The `.gitignore` file ensures that:
+
+- `thirdparty/` directory is excluded
+- Library files (`.dylib`, `.so`, `.dll`) are excluded
+- Build artifacts are excluded
