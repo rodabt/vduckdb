@@ -38,6 +38,10 @@ Thumbs.db
 # Logs
 *.log
 
-# Temporary files
+# Temporary files and directories
 *.tmp
 *.temp
+.tmp/
+
+# Generated docs
+docs/
