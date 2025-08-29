@@ -33,7 +33,7 @@ const table_type = {
 		'br':   '┘'
 		'bs':   '┴'
 	}
-	'md':   {
+	'md':    {
 		// Top chars
 		'tl':   '|'
 		'line': '-'
@@ -49,7 +49,7 @@ const table_type = {
 		'br':   '|'
 		'bs':   ' '
 	}
-	'html': {}
+	'html':  {}
 }
 
 // TODO: Print in streaming fashion....
@@ -99,7 +99,7 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 
 	mut headers := ''
 
-	if o.mode in ['box','ascii'] {
+	if o.mode in ['box', 'ascii'] {
 		table << top
 	}
 	for i, key in keys {
@@ -119,7 +119,7 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 		line += chars['sep']
 		table << line
 	}
-	if o.mode in ['box','ascii'] {
+	if o.mode in ['box', 'ascii'] {
 		table << bottom
 	}
 	table << '\nTotal rows: ${limit}'
@@ -128,14 +128,19 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 
 @[deprecated: 'use get_data_as_table()']
 fn gen_html(data []map[string]string, limit int) string {
-	header := if data.len > 0 { '<tr>' + data[0].keys().map('<th>' + it + '</th>').join_lines() + '</tr>' } else { '' }
+	header := if data.len > 0 {
+		'<tr>' + data[0].keys().map('<th>' + it + '</th>').join_lines() + '</tr>'
+	} else {
+		''
+	}
 	mut rows := []string{}
 	if data.len > 0 {
 		for row in data[0..limit] {
 			rows << '<tr>' + row.values().map('<td>' + it + '</td>').join_lines() + '</tr>'
 		}
 	}
-	table := if data.len > 0 {'
+	table := if data.len > 0 {
+		'
 	<table>
 		<thead>
 		${header}
@@ -144,6 +149,9 @@ fn gen_html(data []map[string]string, limit int) string {
 		${rows.join_lines()}
 		</tbody>
 	</table>
-	'} else { '' }
+	'
+	} else {
+		''
+	}
 	return table
 }

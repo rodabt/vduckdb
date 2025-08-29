@@ -5,12 +5,23 @@ import time
 import os
 
 fn get_libname() !string {
+	// Check current directory first
 	if os.is_file(dl.get_libname('./libduckdb')) {
 		return dl.get_libname('./libduckdb')
 	}
+	// Check thirdparty subdirectory
 	if os.is_file(dl.get_libname('./thirdparty/libduckdb')) {
 		return dl.get_libname('./thirdparty/libduckdb')
 	}
+	// Check parent directory (for when tests run from src/)
+	if os.is_file(dl.get_libname('../libduckdb')) {
+		return dl.get_libname('../libduckdb')
+	}
+	// Check parent's thirdparty directory
+	if os.is_file(dl.get_libname('../thirdparty/libduckdb')) {
+		return dl.get_libname('../thirdparty/libduckdb')
+	}
+	// Check environment variable
 	if os.is_file(dl.get_libname('${os.getenv('LIBDUCKDB_DIR')}/libduckdb')) {
 		return dl.get_libname('${os.getenv('LIBDUCKDB_DIR')}/libduckdb')
 	}

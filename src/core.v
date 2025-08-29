@@ -14,8 +14,8 @@ pub mut:
 	num_columns int
 	columns     map[string]string
 	last_query  string
-	file		string
-	time_ms		string
+	file        string
+	time_ms     string
 }
 
 @[params]
@@ -129,14 +129,14 @@ pub fn (d DuckDB) get_data_as_table() string {
 @[params]
 pub struct LimitOptions {
 pub mut:
-	n		int = 100
+	n int = 100
 }
 
 // Version that returns results as []map[string]string (with limit)
 @[direct_array_access]
 pub fn (d DuckDB) get_array_as_string_with_limit(lo LimitOptions) []map[string]string {
 	mut arr := []map[string]string{}
-	num_rows := if lo.n > 0 { math.min(lo.n,d.num_rows) } else { d.num_rows }
+	num_rows := if lo.n > 0 { math.min(lo.n, d.num_rows) } else { d.num_rows }
 	for r in 0 .. num_rows {
 		mut row := map[string]string{}
 		for idx, key in d.columns.keys() {
