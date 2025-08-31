@@ -33,7 +33,7 @@ jobs:
 
       - name: Install DuckDB library
         run: |
-          v run src/install_duckdb.v
+          v run src/installer/install_duckdb.v
 
       - name: Run Tests
         run: |
