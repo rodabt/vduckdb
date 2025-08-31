@@ -15,12 +15,12 @@ test:
 # Install/update DuckDB library for current platform
 install-libs:
 	@echo "Installing DuckDB library for current platform (dynamic linking)..."
-	@v run src/install_duckdb.v
+	@v run src/installer/install_duckdb.v
 
 # Install/update DuckDB library for static linking (Linux only)
 install-libs-static:
 	@echo "Installing DuckDB library for static linking (Linux only)..."
-	@v run src/install_duckdb.v --static
+	@v run src/installer/install_duckdb.v --static
 
 # Clean downloaded libraries (keeps symlinks)
 clean-libs:
