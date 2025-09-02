@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rodabt/vduckdb/workflows/Build%20and%20Test/badge.svg)](https://github.com/rodabt/vduckdb/actions)
 
-A V wrapper for duckvdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
+A V wrapper for duckdb. This library is now in beta and should be safe to use in most scenarios. Should work on Linux, Windows and MacOS with V version 0.4.x. It requires the library version (`libduckdb*`) of DuckDB (see `https://github.com/duckdb/duckdb/releases`)
 
 ## DuckDB library installation
 
