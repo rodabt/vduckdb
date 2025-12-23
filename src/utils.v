@@ -66,11 +66,11 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 
 	// Calculate the maximum width for each column
 	for key in keys {
-		mut max_width := key.len
+		mut max_width := key.runes().len
 		for row in data {
 			value := row[key]
-			if value.len > max_width {
-				max_width = value.len
+			if value.runes().len > max_width {
+				max_width = value.runes().len
 			}
 		}
 		col_widths << max_width
@@ -103,7 +103,7 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 		table << top
 	}
 	for i, key in keys {
-		headers += chars['sep'] + ' ' + key + ' '.repeat(col_widths[i] - key.len) + ' '
+		headers += chars['sep'] + ' ' + key + ' '.repeat(col_widths[i] - key.runes().len) + ' '
 	}
 	headers += chars['sep']
 	table << headers
@@ -114,7 +114,7 @@ fn gen_table(o OutputConfig, data []map[string]string, limit int) string {
 		mut line := ''
 		for i, key in keys {
 			value := row[key]
-			line += chars['sep'] + ' ' + value + ' '.repeat(col_widths[i] - value.len) + ' '
+			line += chars['sep'] + ' ' + value + ' '.repeat(col_widths[i] - value.runes().len) + ' '
 		}
 		line += chars['sep']
 		table << line
