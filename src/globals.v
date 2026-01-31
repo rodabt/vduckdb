@@ -9,18 +9,6 @@ fn get_libname() !string {
 	if os.is_file(dl.get_libname('./libduckdb')) {
 		return dl.get_libname('./libduckdb')
 	}
-	// Check thirdparty subdirectory
-	if os.is_file(dl.get_libname('./thirdparty/libduckdb')) {
-		return dl.get_libname('./thirdparty/libduckdb')
-	}
-	// Check parent directory (for when tests run from src/)
-	if os.is_file(dl.get_libname('../libduckdb')) {
-		return dl.get_libname('../libduckdb')
-	}
-	// Check parent's thirdparty directory
-	if os.is_file(dl.get_libname('../thirdparty/libduckdb')) {
-		return dl.get_libname('../thirdparty/libduckdb')
-	}
 	// Check environment variable
 	if os.is_file(dl.get_libname('${os.getenv('LIBDUCKDB_DIR')}/libduckdb')) {
 		return dl.get_libname('${os.getenv('LIBDUCKDB_DIR')}/libduckdb')
@@ -29,7 +17,7 @@ fn get_libname() !string {
 }
 
 const library_file_path = get_libname() or {
-	println('[ERROR]: No libduckdb library installed')
+	println('[ERROR]: No libduckdb library installed. Set LIBDUCKDB_DIR env var to the directory containing libduckdb or put libduckdb in the current directory')
 	exit(1)
 }
 const start_date = time.Time{

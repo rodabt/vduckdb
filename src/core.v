@@ -23,6 +23,7 @@ pub struct OutputConfig {
 pub mut:
 	max_rows  int    = 100   // -1 = all rows
 	mode      string = 'box' // Other modes: 'box', 'ascii', 'md'
+	delimiter string = ','
 	with_type bool
 }
 
@@ -206,7 +207,13 @@ pub fn (d DuckDB) print_table(o OutputConfig) string {
 		math.min(d.num_rows, o.max_rows)
 	}
 	data := d.get_array_as_string()
-	out := gen_table(o, data, limit)
+	out := if o.mode == 'csv' {
+		headers := data[0].keys().join(o.delimiter)
+		rows := data[0..limit].map(it.values().join(o.delimiter)).join_lines()
+		headers + '\n' + rows
+	} else {
+		gen_table(o, data, limit)
+	}
 	return out
 }
 
