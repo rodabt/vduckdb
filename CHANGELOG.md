@@ -1,5 +1,10 @@
 # Changelog
 
+## version 0.6.10
+
+- Added CSV output
+- Improved libduckdb messaging
+
 ## version 0.6.9-b
 
 - Added execution time variable db.time_ms (string)

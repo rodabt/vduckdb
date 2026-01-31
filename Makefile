@@ -1,7 +1,4 @@
-.PHONY: local docs fmt test
-
-local:
-	ln -s ~/devel/vduckdb ~/.vmodules/vduckdb
+.PHONY: docs fmt test
 
 docs:
 	VDOC_SORT=false v doc -no-timestamp -readme -f html ./vduckdb -o docs

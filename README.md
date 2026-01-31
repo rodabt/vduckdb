@@ -1,4 +1,4 @@
-# vduckdb 0.6.9-b
+# vduckdb 0.6.10
 
 [![CI](https://github.com/rodabt/vduckdb/workflows/Build%20and%20Test/badge.svg)](https://github.com/rodabt/vduckdb/actions)
 
@@ -105,20 +105,8 @@ Run `v doc vduckdb` or `make docs` to generate static HTML documentation in `doc
 ## Development Commands
 
 ```bash
-# Install/update DuckDB library for current platform (dynamic linking)
-make install-libs
-
-# Install DuckDB library for static linking (Linux only)
-make install-libs-static
-
-# Clean downloaded libraries
-make clean-libs
-
 # Run tests
 make test
-
-# Full project setup (install libs + run tests)
-make setup
 
 # Format code
 make fmt
@@ -141,38 +129,3 @@ make docs
 ## Contributing
 
 Pull requests are welcome
-
-### Development Setup
-
-The project includes a V-native installer that works on all platforms:
-
-- `src/install_duckdb.v` - Cross-platform DuckDB library installer written in V
-- No external dependencies - everything runs natively in V
-
-### Static Linking (Linux Only)
-
-For Linux users who want better performance and no runtime library dependencies:
-
-```bash
-# Install static library
-make install-libs-static
-
-# Compile with static linking
-v -cflags "-static" your_program.v
-```
-
-**Benefits of static linking:**
-- ⚡ **Better performance** - No dynamic library loading overhead
-- 📦 **Self-contained** - No external library dependencies at runtime
-- 🚀 **Faster startup** - No library resolution delays
-- 🔒 **More secure** - No library injection vulnerabilities
-
-**Note:** Static linking is only available on Linux platforms where DuckDB provides `libduckdb_static.a`.
-
-### Library Management
-
-The DuckDB library is automatically managed and should not be committed to the repository. The `.gitignore` file ensures that:
-
-- `thirdparty/` directory is excluded
-- Library files (`.dylib`, `.so`, `.dll`) are excluded
-- Build artifacts are excluded
