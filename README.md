@@ -397,17 +397,6 @@ fn main() {
 | `time_ms`     | string            | Last query execution time        |
 | `file`        | string            | Current database file path       |
 
-## Real-World Usage in Production
-
-vduckdb is used in several production applications:
-
-- **vframes**: DataFrame operations with SQL queries
-- **cuiqviz**: Data visualization with multi-format support (CSV, JSON, Parquet, Excel)
-- **cuiqData**: ETL pipeline execution with complex transformations
-- **cuiqMetrics**: Real-time metrics collection and analysis
-
-See `/home/rabt/devel/vframes`, `/home/rabt/devel/cuiqviz`, and `/home/rabt/devel/cuiqData` for complete examples.
-
 ## Development
 
 ```bash
