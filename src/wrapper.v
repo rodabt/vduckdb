@@ -48,6 +48,16 @@ enum Type {
 	duckdb_type_uuid
 	duckdb_type_union
 	duckdb_type_bit
+	duckdb_type_time_tz
+	duckdb_type_timestamp_tz
+	duckdb_type_uhugeint = 32
+	duckdb_type_array = 33
+	duckdb_type_any = 34
+	duckdb_type_bignum = 35
+	duckdb_type_sqlnull = 36
+	duckdb_type_string_literal = 37
+	duckdb_type_integer_literal = 38
+	duckdb_type_time_ns = 39
 }
 
 struct Column {
@@ -168,6 +178,8 @@ type FNVoidPtr = fn (voidptr)
 
 type FNVersion = fn () &char
 
+
+
 const handle = dl.open_opt(library_file_path, dl.rtld_lazy) or { panic(err) }
 const duckdb_open = FNOpen(dl.sym_opt(handle, 'duckdb_open') or { panic(err) })
 const duckdb_open_ext = FNOpenExt(dl.sym_opt(handle, 'duckdb_open_ext') or { panic(err) })
@@ -221,7 +233,8 @@ const duckdb_result_error = FNResultError(dl.sym_opt(handle, 'duckdb_result_erro
 const duckdb_free = FNVoidPtr(dl.sym_opt(handle, 'duckdb_free') or { panic(err) })
 const duckdb_lib_version = FNVersion(dl.sym_opt(handle, 'duckdb_library_version') or { panic(err) })
 
-// TODO: Check when row or col are out of bounds!!!
+// duckdb_value_string retrieves a VARCHAR value from a query result.
+// Returns 'NULL' if the value is nil.
 pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 	ret := unsafe { duckdb_value_varchar(result, col, row) }
 	if ret == unsafe { nil } {
@@ -232,23 +245,30 @@ pub fn duckdb_value_string(result &Result, col u64, row u64) string {
 	return s
 }
 
+// duckdb_value_date retrieves a DATE value from a query result.
+// Returns the date formatted as YYYY-MM-DD.
 pub fn duckdb_value_date(result &Result, col u64, row u64) string {
 	days := unsafe { duckdb_value_dt(result, col, row).days }
 	cdate := start_date.add_days(days)
 	return cdate.strftime('%Y-%m-%d')
 }
 
+// duckdb_query_error retrieves the error message from a failed query execution.
 pub fn duckdb_query_error(result &Result) string {
 	ret := unsafe { duckdb_result_error(result).vstring() }
 	return ret
 }
 
+// duckdb_column_name retrieves the name of a column from a query result.
 pub fn duckdb_column_name(result &Result, col_idx u64) string {
 	ret := unsafe { duckdb_column_chars(result, col_idx).vstring() }
 	return ret
 }
 
+// duckdb_library_version retrieves the version of the linked DuckDB library.
 pub fn duckdb_library_version() string {
 	ret := unsafe { duckdb_lib_version().vstring() }
 	return ret
 }
+
+

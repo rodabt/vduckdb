@@ -1,6 +1,7 @@
 # DuckDB libraries and headers (downloaded automatically)
 thirdparty/
 src/thirdparty/
+src/testdata/
 *.dylib
 *.so
 *.dll

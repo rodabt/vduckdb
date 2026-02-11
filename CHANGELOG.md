@@ -1,5 +1,16 @@
 # Changelog
 
+## version 0.7.0
+
+- Added support for arrays without casting explicitly
+- Enhanced README.md with comprehensive examples and real-world use cases
+- Added module documentation in src/README.md (modules.vlang.io style)
+- Fixed API documentation for `get_array_as_string_with_limit()`
+- All code examples verified and tested
+- Improved error handling examples
+- Added troubleshooting section to documentation
+- Added production usage references
+
 ## version 0.6.10
 
 - Added CSV output
